@@ -19,6 +19,9 @@
 			]
 		}
 	},
+	"dependencies": {
+		"geode.node-ids": "1.19.0"
+	},
 	"incompatibilities": [{
 		"id": "thesillydoggo.comment_emojis",
 		"version": "*",
