@@ -6,6 +6,11 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 project(CommentEmojis VERSION 1.0.0)
 
+add_library(${PROJECT_NAME} SHARED
+    src/main.cpp
+    src/label.cpp
+)
+
 if (DEFINED ENV{GITHUB_ACTIONS})
     set_property(TARGET ${PROJECT_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
     if (MSVC)
@@ -17,18 +22,12 @@ if (DEFINED ENV{GITHUB_ACTIONS})
     endif()
 endif()
 
-add_library(${PROJECT_NAME} SHARED
-    src/main.cpp
-    src/label.cpp
-)
-
 if (NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")
 else()
     message(STATUS "Found Geode: $ENV{GEODE_SDK}")
 endif()
 
-set(GEODE_BUNDLE_PDB OFF)
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
 CPMAddPackage("gh:simdutf/simdutf@6.0.3")
