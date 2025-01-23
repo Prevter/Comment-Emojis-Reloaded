@@ -10,37 +10,35 @@ std::string replaceEmojis(std::string_view text) {
 }
 
 // Testing stuff
-// #include <Geode/modify/MenuLayer.hpp>
-// class $modify(MenuLayer) {
-//     bool init() override {
-//         std::string buf;
-//         size_t counter = 0;
-//
-//         for (auto& [emoji, path] : EmojiSheet) {
-//             if (!cocos2d::CCSpriteFrameCache::get()->spriteFrameByName(path)) {
-//                 geode::log::warn("Emoji {} not found in '{}'", utf32_to_utf8(emoji), path);
-//             } else {
-//                 buf += utf32_to_utf8(emoji);
-//                 if (++counter % 16 == 0) {
-//                     buf += '\n';
-//                 }
-//             }
-//         }
-//
-//         if (!MenuLayer::init()) return false;
-//
-//         auto winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
-//
-//         auto emojiLabel = Label::create("", "chatFont.fnt");
-//         emojiLabel->enableEmojis("EmojiSheet.png"_spr, &EmojiSheet);
-//         emojiLabel->setString(buf);
-//         emojiLabel->setPosition(winSize / 2);
-//         emojiLabel->limitLabelWidth(winSize.width - 20.f, 0.7f, 0.1f);
-//         this->addChild(emojiLabel, 100);
-//
-//         return true;
-//     }
-// };
+#include <Geode/modify/MenuLayer.hpp>
+class $modify(MenuLayer) {
+    bool init() override {
+        for (auto& [emoji, path] : EmojiSheet) {
+            if (!cocos2d::CCSpriteFrameCache::get()->spriteFrameByName(path)) {
+                geode::log::warn("Emoji {} not found in '{}'", utf32_to_utf8(emoji), path);
+            }
+        }
+
+        if (!MenuLayer::init()) return false;
+
+        std::string buf;
+        for (auto& [name, emoji] : EmojiReplacements) {
+            buf += fmt::format("({}{}) ", name, emoji);
+        }
+        buf = replaceEmojis(buf);
+
+        auto winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
+
+        auto emojiLabel = Label::createWrapped("", "chatFont.fnt", 300);
+        emojiLabel->enableEmojis("EmojiSheet.png"_spr, &EmojiSheet);
+        emojiLabel->setString(buf);
+        emojiLabel->setPosition(winSize / 2);
+        emojiLabel->limitLabelWidth(winSize.width - 20.f, 0.7f, 0.1f);
+        this->addChild(emojiLabel, 100);
+
+        return true;
+    }
+};
 
 class $modify(CommentCellHook, CommentCell) {
     static void onModify(auto& self) {

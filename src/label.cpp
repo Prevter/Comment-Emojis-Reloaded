@@ -242,7 +242,7 @@ constexpr bool isRegionalIndicator(char32_t c) {
 constexpr static bool isEmoji(char32_t c) {
     return (c >= 0x1F300 && c <= 0x1F6FF)    // Emoticons, transport, weather
            || (c >= 0x2600 && c <= 0x27BF)   // Miscellaneous Symbols and Dingbats
-           || (c >= 0x2300 && c <= 0x23FF)   // Miscellaneous Technical
+           || (c >= 0x2000 && c <= 0x23FF)   // General Punctuation, Super/subscripts, Diacritical marks, etc.
            || (c >= 0x2B50 && c <= 0x2B55)   // Star emojis
            || (c >= 0x1F900 && c <= 0x1F9FF) // Supplemental Symbols and Pictographs
            || (c >= 0x1F700 && c <= 0x1F7FF) // Alchemical Symbols

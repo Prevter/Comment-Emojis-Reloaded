@@ -26,7 +26,7 @@ template <size_t N>
 struct StringLiteral {
     char value[N]{};
     constexpr StringLiteral(const char (&str)[N]) { std::copy_n(str, N, value); }
-    constexpr operator std::string_view() const { return { value, N }; }
+    constexpr operator std::string_view() const { return { value, N - 1 }; }
 };
 
 template <size_t N>
@@ -34,7 +34,7 @@ struct StringLiteralUTF32 {
     char32_t value[N]{};
     constexpr StringLiteralUTF32(const char32_t (&str)[N]) { std::copy_n(str, N, value); }
     constexpr StringLiteralUTF32(char32_t chr) { value[0] = chr; }
-    constexpr operator std::u32string_view() const { return { value, N }; }
+    constexpr operator std::u32string_view() const { return { value, N - 1 }; }
 };
 
 template <size_t N>
