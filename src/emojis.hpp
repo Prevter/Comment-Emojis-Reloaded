@@ -178,18 +178,18 @@ namespace custom {
 
     // Player Icons
     constexpr char32_t PlayersBase = 0x1c0c0;
-    constexpr custom_emoji<":default:", PlayersBase + 1> PlayerDefault;
+    constexpr custom_emoji<":default:", PlayersBase> PlayerDefault;
     constexpr custom_emoji<":sdslayer:", PlayersBase + 1> PlayerSdslayer;
-    constexpr custom_emoji<":evw:", PlayersBase + 1> PlayerEVW;
-    constexpr custom_emoji<":tride:", PlayersBase + 1> PlayerTride;
-    constexpr custom_emoji<":colon:", PlayersBase + 1> PlayerColon;
-    constexpr custom_emoji<":robtop:", PlayersBase + 1> PlayerRobTop;
-    constexpr custom_emoji<":wulzy:", PlayersBase + 1> PlayerWulzy;
-    constexpr custom_emoji<":juniper:", PlayersBase + 1> PlayerJuniper;
-    constexpr custom_emoji<":riot:", PlayersBase + 1> PlayerRiot;
-    constexpr custom_emoji<":cyclic:", PlayersBase + 1> PlayerCyclic;
-    constexpr custom_emoji<":thesillydoggo:", PlayersBase + 1> PlayerTheSillyDoggo;
-    constexpr custom_emoji<":uproxide:", PlayersBase + 1> PlayerUproxide;
+    constexpr custom_emoji<":evw:", PlayersBase + 2> PlayerEVW;
+    constexpr custom_emoji<":tride:", PlayersBase + 3> PlayerTride;
+    constexpr custom_emoji<":colon:", PlayersBase + 4> PlayerColon;
+    constexpr custom_emoji<":robtop:", PlayersBase + 5> PlayerRobTop;
+    constexpr custom_emoji<":wulzy:", PlayersBase + 6> PlayerWulzy;
+    constexpr custom_emoji<":juniper:", PlayersBase + 7> PlayerJuniper;
+    constexpr custom_emoji<":riot:", PlayersBase + 8> PlayerRiot;
+    constexpr custom_emoji<":cyclic:", PlayersBase + 9> PlayerCyclic;
+    constexpr custom_emoji<":thesillydoggo:", PlayersBase + 10> PlayerTheSillyDoggo;
+    constexpr custom_emoji<":uproxide:", PlayersBase + 11> PlayerUproxide;
 }
 
 static std::initializer_list<Emoji> EmojiReplacements = {
