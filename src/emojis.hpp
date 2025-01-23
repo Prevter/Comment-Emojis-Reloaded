@@ -4,39 +4,53 @@
 
 namespace custom {
     // Level difficulties
-    constexpr custom_emoji<":na:", 0x1c000> DiffNA;
-    constexpr custom_emoji<":auto:", 0x1c001> DiffAuto;
-    constexpr custom_emoji<":easy:", 0x1c002> DiffEasy;
-    constexpr custom_emoji<":normal:", 0x1c003> DiffNormal;
-    constexpr custom_emoji<":hard:", 0x1c004> DiffHard;
-    constexpr custom_emoji<":harder:", 0x1c005> DiffHarder;
-    constexpr custom_emoji<":insane:", 0x1c006> DiffInsane;
-    constexpr custom_emoji<":easydemon:", 0x1c007> DiffEasyDemon;
-    constexpr custom_emoji<":mediumdemon:", 0x1c008> DiffMediumDemon;
-    constexpr custom_emoji<":harddemon:", 0x1c009> DiffHardDemon;
-    constexpr custom_emoji<":insanedemon:", 0x1c00a> DiffInsaneDemon;
-    constexpr custom_emoji<":extremedemon:", 0x1c00b> DiffExtremeDemon;
+    constexpr char32_t DiffBase = 0x1c000;
+    constexpr custom_emoji<":na:", DiffBase> DiffNA;
+    constexpr custom_emoji<":auto:", DiffBase + 1> DiffAuto;
+    constexpr custom_emoji<":easy:", DiffBase + 2> DiffEasy;
+    constexpr custom_emoji<":normal:", DiffBase + 3> DiffNormal;
+    constexpr custom_emoji<":hard:", DiffBase + 4> DiffHard;
+    constexpr custom_emoji<":harder:", DiffBase + 5> DiffHarder;
+    constexpr custom_emoji<":insane:", DiffBase + 6> DiffInsane;
+    constexpr custom_emoji<":easydemon:", DiffBase + 7> DiffEasyDemon;
+    constexpr custom_emoji<":mediumdemon:", DiffBase + 8> DiffMediumDemon;
+    constexpr custom_emoji<":harddemon:", DiffBase + 9> DiffHardDemon;
+    constexpr custom_emoji<":insanedemon:", DiffBase + 10> DiffInsaneDemon;
+    constexpr custom_emoji<":extremedemon:", DiffBase + 11> DiffExtremeDemon;
+    constexpr custom_emoji<":casual:", DiffBase + 12> DiffCasual;
+    constexpr custom_emoji<":tough:", DiffBase + 13> DiffTough;
+    constexpr custom_emoji<":cruel:", DiffBase + 14> DiffCruel;
+    constexpr custom_emoji<":creul:", DiffBase + 14> DiffCreul; // typo from original mod
 
     // Currency
-    constexpr custom_emoji<":orb:", 0x1c00c> Orb;
-    constexpr custom_emoji<":orbs:", 0x1c00d> Orbs;
-    constexpr custom_emoji<":diamond:", 0x1c00e> Diamond;
-    constexpr custom_emoji<":diamonds:", 0x1c00f> Diamonds;
+    constexpr char32_t CurrencyBase = 0x1c010;
+    constexpr custom_emoji<":orb:", CurrencyBase> Orb;
+    constexpr custom_emoji<":orbs:", CurrencyBase + 1> Orbs;
+    constexpr custom_emoji<":diamond:", CurrencyBase + 2> Diamond;
+    constexpr custom_emoji<":diamonds:", CurrencyBase + 3> Diamonds;
 
     // Locks
-    constexpr custom_emoji<":locked:", 0x1c010> Locked;
-    constexpr custom_emoji<":lockedgray:", 0x1c011> LockedGray;
-    constexpr custom_emoji<":unlocked:", 0x1c012> Unlocked;
+    constexpr char32_t LockBase = 0x1c01a;
+    constexpr custom_emoji<":locked:", LockBase> Locked;
+    constexpr custom_emoji<":lockedgray:", LockBase + 1> LockedGray;
+    constexpr custom_emoji<":unlocked:", LockBase + 2> Unlocked;
 }
 
 static std::initializer_list<Emoji> EmojiReplacements = {
-    // Geometry Dash icons
+    // Level difficulties
     custom::DiffNA, custom::DiffAuto, custom::DiffEasy,
     custom::DiffNormal, custom::DiffHard, custom::DiffHarder,
     custom::DiffInsane, custom::DiffEasyDemon, custom::DiffMediumDemon,
     custom::DiffHardDemon, custom::DiffInsaneDemon, custom::DiffExtremeDemon,
+    custom::DiffCasual, custom::DiffTough, custom::DiffCruel, custom::DiffCreul,
+
+    // Currency
     custom::Orb, custom::Orbs, custom::Diamond, custom::Diamonds,
+
+    // Locks
     custom::Locked, custom::LockedGray, custom::Unlocked,
+
+    // Geometry Dash icons
     Emoji{":star:", "⭐"}, Emoji{":moon:", "🌙"},
     Emoji{":check:", "✔️"}, Emoji{":cross:", "❌"},
     Emoji{":like:", "👍"}, Emoji{":dislike:", "👎"},
@@ -109,13 +123,20 @@ static std::initializer_list<Emoji> EmojiReplacements = {
 };
 
 static Label::EmojiMap EmojiSheet = {
-    // Geometry Dash icons
+    // Level difficulties
     custom::DiffNA, custom::DiffAuto, custom::DiffEasy,
     custom::DiffNormal, custom::DiffHard, custom::DiffHarder,
     custom::DiffInsane, custom::DiffEasyDemon, custom::DiffMediumDemon,
     custom::DiffHardDemon, custom::DiffInsaneDemon, custom::DiffExtremeDemon,
+    custom::DiffCasual, custom::DiffTough, custom::DiffCruel, custom::DiffCreul,
+
+    // Currency
     custom::Orb, custom::Orbs, custom::Diamond, custom::Diamonds,
+
+    // Locks
     custom::Locked, custom::LockedGray, custom::Unlocked,
+
+    // Geometry Dash icons
     U"⭐"_emoji, U"🌙"_emoji,
     U"✔️"_emoji, U"❌"_emoji,
     U"👍"_emoji, U"👎"_emoji,
