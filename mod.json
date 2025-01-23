@@ -15,7 +15,8 @@
 		"spritesheets": {
 			"EmojiSheet": [
 				"resources/emojis/twemoji/*.png",
-				"resources/emojis/geometrydash/*.png"
+				"resources/emojis/geometrydash/*.png",
+				"resources/emojis/legacy/*.png"
 			]
 		}
 	},
