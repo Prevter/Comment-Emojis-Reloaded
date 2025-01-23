@@ -48,10 +48,15 @@ class $modify(CommentCellHook, CommentCell) {
     void loadFromComment(GJComment* comment) {
         CommentCell::loadFromComment(comment);
 
+        if (!comment || comment->m_isSpam) {
+            return;
+        }
+
         Label* newText;
         cocos2d::ccColor3B changedColor;
         auto commentString = replaceEmojis(comment->m_commentString);
-        bool isWrapped = false;
+        float maxWidth = 315.f;
+        float defaultScale = 1.f;
 
         if (auto oldText = static_cast<TextArea*>(m_mainLayer->getChildByID("comment-text-area"))) {
             oldText->setVisible(false);
@@ -66,7 +71,6 @@ class $modify(CommentCellHook, CommentCell) {
             newText->setAnchorPoint({0.f, 0.5f});
             newText->setPosition({10.f, m_accountComment ? 37.f : 32.f});
             newText->setID("comment-text-area"_spr);
-            isWrapped = true;
         }
         else if (auto oldLabel = static_cast<cocos2d::CCLabelBMFont*>(m_mainLayer->getChildByID("comment-text-label"))) {
             oldLabel->setVisible(false);
@@ -76,6 +80,8 @@ class $modify(CommentCellHook, CommentCell) {
             newText->setAnchorPoint({0.f, 0.5f});
             newText->setPosition({10.f, 9.f});
             newText->setID("comment-text-label"_spr);
+            maxWidth = 270.f;
+            defaultScale = 0.7f;
         }
         else {
             return;
@@ -84,10 +90,7 @@ class $modify(CommentCellHook, CommentCell) {
         newText->setColor(changedColor);
         newText->enableEmojis("EmojiSheet.png"_spr, &EmojiSheet);
         newText->setString(commentString);
-
-        if (!isWrapped) {
-            newText->limitLabelWidth(270.f, 0.7f, 0.1f);
-        }
+        newText->limitLabelWidth(maxWidth, defaultScale, 0.1f);
 
         m_mainLayer->addChild(newText);
     }
