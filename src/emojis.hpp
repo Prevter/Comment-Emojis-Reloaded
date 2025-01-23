@@ -113,6 +113,83 @@ namespace custom {
     constexpr custom_emoji<":freakbob:", LegacyBase + 59> FreakBob;
     constexpr custom_emoji<":nuhuh:", LegacyBase + 60> Nuhuh;
     constexpr custom_emoji<":yuhuh:", LegacyBase + 61> Yuhuh;
+
+    // Cube Emotes (By @cyanflower)
+    constexpr char32_t CubeBase = 0x1c070;
+    constexpr custom_emoji<":boshytime:", CubeBase> BoshyTime;
+    constexpr custom_emoji<":cubeballin:", CubeBase + 1> CubeBallin;
+    constexpr custom_emoji<":cubeconfused:", CubeBase + 2> CubeConfused;
+    constexpr custom_emoji<":cubecool:", CubeBase + 3> CubeCool;
+    constexpr custom_emoji<":cubehappy:", CubeBase + 4> CubeHappy;
+    constexpr custom_emoji<":cubeletsgo:", CubeBase + 5> CubeLetsGo;
+    constexpr custom_emoji<":cubepog:", CubeBase + 6> CubePog;
+    constexpr custom_emoji<":cubescared:", CubeBase + 7> CubeScared;
+    constexpr custom_emoji<":cubestare:", CubeBase + 8> CubeStare;
+    constexpr custom_emoji<":cubethink:", CubeBase + 9> CubeThink;
+    constexpr custom_emoji<":cubeview:", CubeBase + 10> CubeView;
+    constexpr custom_emoji<":cubewink:", CubeBase + 11> CubeWink;
+    constexpr custom_emoji<":defaultangry:", CubeBase + 12> DefaultAngry;
+    constexpr custom_emoji<":eeyikes:", CubeBase + 13> EeYikes;
+    constexpr custom_emoji<":fumocube:", CubeBase + 14> FumoCube;
+    constexpr custom_emoji<":robtoppixel:", CubeBase + 15> RobTopPixel;
+    constexpr custom_emoji<":smugzero:", CubeBase + 16> SmugZero;
+
+    // Cat Emotes (C# Discord Server)
+    constexpr char32_t CatBase = 0x1c090;
+    constexpr custom_emoji<":catbless:", CatBase> CatBless;
+    constexpr custom_emoji<":catcash:", CatBase + 1> CatCash;
+    constexpr custom_emoji<":catcomf:", CatBase + 2> CatComf;
+    constexpr custom_emoji<":catcool:", CatBase + 3> CatCool;
+    constexpr custom_emoji<":catcop:", CatBase + 4> CatCop;
+    constexpr custom_emoji<":catcorn:", CatBase + 5> CatCorn;
+    constexpr custom_emoji<":catderp:", CatBase + 6> CatDerp;
+    constexpr custom_emoji<":catfacepalm:", CatBase + 7> CatFacepalm;
+    constexpr custom_emoji<":catfine:", CatBase + 8> CatFine;
+    constexpr custom_emoji<":catgasm:", CatBase + 9> CatGasm;
+    constexpr custom_emoji<":catgasp:", CatBase + 10> CatGasp;
+    constexpr custom_emoji<":catgift:", CatBase + 11> CatGift;
+    constexpr custom_emoji<":catgrump:", CatBase + 12> CatGrump;
+    constexpr custom_emoji<":catgun:", CatBase + 13> CatGun;
+    constexpr custom_emoji<":cathammer:", CatBase + 14> CatHammer;
+    constexpr custom_emoji<":cathi:", CatBase + 15> CatHi;
+    constexpr custom_emoji<":cathype:", CatBase + 16> CatHype;
+    constexpr custom_emoji<":catlaugh:", CatBase + 17> CatLaugh;
+    constexpr custom_emoji<":catlick:", CatBase + 18> CatLick;
+    constexpr custom_emoji<":catloser:", CatBase + 19> CatLoser;
+    constexpr custom_emoji<":catlost:", CatBase + 20> CatLost;
+    constexpr custom_emoji<":catlove:", CatBase + 21> CatLove;
+    constexpr custom_emoji<":catlul:", CatBase + 22> CatLul;
+    constexpr custom_emoji<":catlurk:", CatBase + 23> CatLurk;
+    constexpr custom_emoji<":catmusik:", CatBase + 24> CatMusik;
+    constexpr custom_emoji<":catok:", CatBase + 25> CatOK;
+    constexpr custom_emoji<":catpat:", CatBase + 26> CatPat;
+    constexpr custom_emoji<":catpls:", CatBase + 27> CatPls;
+    constexpr custom_emoji<":catpog:", CatBase + 28> CatPog;
+    constexpr custom_emoji<":catpout:", CatBase + 29> CatPout;
+    constexpr custom_emoji<":catree:", CatBase + 30> CatRee;
+    constexpr custom_emoji<":catshrug:", CatBase + 31> CatShrug;
+    constexpr custom_emoji<":catshy:", CatBase + 32> CatShy;
+    constexpr custom_emoji<":catsimp:", CatBase + 33> CatSimp;
+    constexpr custom_emoji<":catsip:", CatBase + 34> CatSip;
+    constexpr custom_emoji<":catsleep:", CatBase + 35> CatSleep;
+    constexpr custom_emoji<":catsmart:", CatBase + 36> CatSmart;
+    constexpr custom_emoji<":catsweat:", CatBase + 37> CatSweat;
+    constexpr custom_emoji<":catthinking:", CatBase + 38> CatThinking;
+
+    // Player Icons
+    constexpr char32_t PlayersBase = 0x1c0c0;
+    constexpr custom_emoji<":default:", PlayersBase + 1> PlayerDefault;
+    constexpr custom_emoji<":sdslayer:", PlayersBase + 1> PlayerSdslayer;
+    constexpr custom_emoji<":evw:", PlayersBase + 1> PlayerEVW;
+    constexpr custom_emoji<":tride:", PlayersBase + 1> PlayerTride;
+    constexpr custom_emoji<":colon:", PlayersBase + 1> PlayerColon;
+    constexpr custom_emoji<":robtop:", PlayersBase + 1> PlayerRobTop;
+    constexpr custom_emoji<":wulzy:", PlayersBase + 1> PlayerWulzy;
+    constexpr custom_emoji<":juniper:", PlayersBase + 1> PlayerJuniper;
+    constexpr custom_emoji<":riot:", PlayersBase + 1> PlayerRiot;
+    constexpr custom_emoji<":cyclic:", PlayersBase + 1> PlayerCyclic;
+    constexpr custom_emoji<":thesillydoggo:", PlayersBase + 1> PlayerTheSillyDoggo;
+    constexpr custom_emoji<":uproxide:", PlayersBase + 1> PlayerUproxide;
 }
 
 static std::initializer_list<Emoji> EmojiReplacements = {
@@ -153,6 +230,35 @@ static std::initializer_list<Emoji> EmojiReplacements = {
     custom::Cologne, custom::Globed, custom::LevelThumbnails, custom::Oh,
     custom::HolyMoly, custom::ThousandYardStare, custom::SpunchBob,
     custom::FreakBob, custom::Nuhuh, custom::Yuhuh,
+
+    // Cube Emotes
+    custom::BoshyTime, custom::CubeBallin, custom::CubeConfused,
+    custom::CubeCool, custom::CubeHappy, custom::CubeLetsGo,
+    custom::CubePog, custom::CubeScared, custom::CubeStare,
+    custom::CubeThink, custom::CubeView, custom::CubeWink,
+    custom::DefaultAngry, custom::EeYikes, custom::FumoCube,
+    custom::RobTopPixel, custom::SmugZero,
+
+    // Cat Emotes
+    custom::CatBless, custom::CatCash, custom::CatComf,
+    custom::CatCool, custom::CatCop, custom::CatCorn,
+    custom::CatDerp, custom::CatFacepalm, custom::CatFine,
+    custom::CatGasm, custom::CatGasp, custom::CatGift,
+    custom::CatGrump, custom::CatGun, custom::CatHammer,
+    custom::CatHi, custom::CatHype, custom::CatLaugh,
+    custom::CatLick, custom::CatLoser, custom::CatLost,
+    custom::CatLove, custom::CatLul, custom::CatLurk,
+    custom::CatMusik, custom::CatOK, custom::CatPat,
+    custom::CatPls, custom::CatPog, custom::CatPout,
+    custom::CatRee, custom::CatShrug, custom::CatShy,
+    custom::CatSimp, custom::CatSip, custom::CatSleep,
+    custom::CatSmart, custom::CatSweat, custom::CatThinking,
+
+    // Player Icons
+    custom::PlayerDefault, custom::PlayerSdslayer, custom::PlayerEVW,
+    custom::PlayerTride, custom::PlayerColon, custom::PlayerRobTop,
+    custom::PlayerWulzy, custom::PlayerJuniper, custom::PlayerRiot,
+    custom::PlayerCyclic, custom::PlayerTheSillyDoggo, custom::PlayerUproxide,
 
     // Geometry Dash icons
     Emoji{":star:", "⭐"}, Emoji{":moon:", "🌙"},
@@ -264,6 +370,35 @@ static Label::EmojiMap EmojiSheet = {
     custom::Cologne, custom::Globed, custom::LevelThumbnails, custom::Oh,
     custom::HolyMoly, custom::ThousandYardStare, custom::SpunchBob,
     custom::FreakBob, custom::Nuhuh, custom::Yuhuh,
+
+    // Cube Emotes
+    custom::BoshyTime, custom::CubeBallin, custom::CubeConfused,
+    custom::CubeCool, custom::CubeHappy, custom::CubeLetsGo,
+    custom::CubePog, custom::CubeScared, custom::CubeStare,
+    custom::CubeThink, custom::CubeView, custom::CubeWink,
+    custom::DefaultAngry, custom::EeYikes, custom::FumoCube,
+    custom::RobTopPixel, custom::SmugZero,
+
+    // Cat Emotes
+    custom::CatBless, custom::CatCash, custom::CatComf,
+    custom::CatCool, custom::CatCop, custom::CatCorn,
+    custom::CatDerp, custom::CatFacepalm, custom::CatFine,
+    custom::CatGasm, custom::CatGasp, custom::CatGift,
+    custom::CatGrump, custom::CatGun, custom::CatHammer,
+    custom::CatHi, custom::CatHype, custom::CatLaugh,
+    custom::CatLick, custom::CatLoser, custom::CatLost,
+    custom::CatLove, custom::CatLul, custom::CatLurk,
+    custom::CatMusik, custom::CatOK, custom::CatPat,
+    custom::CatPls, custom::CatPog, custom::CatPout,
+    custom::CatRee, custom::CatShrug, custom::CatShy,
+    custom::CatSimp, custom::CatSip, custom::CatSleep,
+    custom::CatSmart, custom::CatSweat, custom::CatThinking,
+
+    // Player Icons
+    custom::PlayerDefault, custom::PlayerSdslayer, custom::PlayerEVW,
+    custom::PlayerTride, custom::PlayerColon, custom::PlayerRobTop,
+    custom::PlayerWulzy, custom::PlayerJuniper, custom::PlayerRiot,
+    custom::PlayerCyclic, custom::PlayerTheSillyDoggo, custom::PlayerUproxide,
 
     // Geometry Dash icons
     U"⭐"_emoji, U"🌙"_emoji,

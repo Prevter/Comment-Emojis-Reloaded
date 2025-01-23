@@ -16,7 +16,10 @@
 			"EmojiSheet": [
 				"resources/emojis/twemoji/*.png",
 				"resources/emojis/geometrydash/*.png",
-				"resources/emojis/legacy/*.png"
+				"resources/emojis/legacy/*.png",
+				"resources/emojis/cube/*.png",
+				"resources/emojis/cat/*.png",
+				"resources/emojis/players/*.png"
 			]
 		}
 	},
