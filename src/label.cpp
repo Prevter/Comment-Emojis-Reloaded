@@ -421,6 +421,10 @@ void Label::enableEmojis(std::string_view sheetFileName, const EmojiMap* frameNa
     m_emojiMap = frameNames;
 }
 
+void Label::enableCustomNodes(const CustomNodeMap* nodes) {
+    m_customNodeMap = nodes;
+}
+
 void Label::setWrapEnabled(bool enabled) {
     if (m_useWrap == enabled) {
         return;
@@ -483,13 +487,16 @@ float Label::kerningAmountForChars(uint32_t first, uint32_t second, const BMFont
     return it->second;
 }
 
-void Label::hideAllChars() const {
-    for (auto& line : m_lines) {
-        for (auto& charSprite : line) {
-            charSprite->m_bVisible = false;
-            charSprite->m_bDirty = true;
-        }
+void Label::hideAllChars() {
+    for (auto sprite : m_sprites) {
+        sprite->m_bVisible = false;
+        sprite->m_bDirty = true;
     }
+
+    for (auto custom : m_customNodes) {
+        custom->removeFromParent();
+    }
+    m_customNodes.clear();
 }
 
 void Label::updateAlignment() const {
@@ -573,6 +580,8 @@ void Label::updateCharsWrapped() {
     }
 
     m_lines.clear();
+    m_sprites.clear();
+    m_sprites.reserve(stringLen);
 
     auto& mainCharset = m_fontConfig->getFontDefDictionary();
     auto commonHeight = m_fontConfig->getCommonHeight();
@@ -593,7 +602,7 @@ void Label::updateCharsWrapped() {
     size_t emojiIndex = 0;
 
     struct Word {
-        std::vector<cocos2d::CCSprite*> sprites;
+        std::vector<CCNode*> sprites;
         float xOffset = 0.f;
         float fromX = 0;
         float toX = 0;
@@ -661,6 +670,7 @@ void Label::updateCharsWrapped() {
                 // Re-using existing sprites for performance reasons
                 auto fontChar = getSpriteForChar(*currentBatch, index, scale, rect);
                 currentSpriteWord.sprites.push_back(fontChar);
+                m_sprites.push_back(fontChar);
 
                 rect.size.width *= scale;
                 rect.size.height *= scale;
@@ -697,7 +707,7 @@ void Label::updateCharsWrapped() {
     }
 
     // start wrapping the lines
-    std::vector<cocos2d::CCSprite*> currentLine;
+    std::vector<CCNode*> currentLine;
     nextX = 0;
     auto maxWidth = m_wrapWidth / getScale();
     for (auto& spriteLine : spriteLines) {
@@ -848,7 +858,7 @@ std::u32string_view Label::parseEmoji(std::u32string_view text, uint32_t& index)
 
 void Label::checkForEmoji(
     std::u32string_view text, uint32_t& index, float scaleFactor, float& nextX, float nextY, float commonHeight,
-    float& longestLine, std::vector<cocos2d::CCSprite*>& currentLine, size_t& emojiIndex
+    float& longestLine, std::vector<CCNode*>& currentLine, size_t& emojiIndex
 ) {
     if (!m_spriteSheetBatch) {
         return;
@@ -899,7 +909,42 @@ void Label::checkForEmoji(
         }
 
         currentLine.push_back(sprite);
+        m_sprites.push_back(sprite);
         ++emojiIndex;
+    } else if (m_customNodeMap) {
+        auto it = m_customNodeMap->find(decodedEmoji);
+        if (it == m_customNodeMap->end()) { return; }
+
+        auto node = it->second(text.substr(index), index);
+        if (!node) { return; }
+
+        // calculate size
+        auto size = node->getContentSize();
+        auto sizeInPixels = cocos2d::CCSize{
+            size.width * scaleFactor,
+            size.height * scaleFactor
+        };
+
+        // rescale to fit font height
+        auto sprScale = commonHeight / sizeInPixels.height;
+        node->setScale(sprScale);
+        sizeInPixels.width *= sprScale;
+
+        // update position
+        node->setPosition({
+            (nextX + sizeInPixels.width * .5f) / scaleFactor,
+            (nextY + commonHeight * .5f) / scaleFactor
+        });
+        nextX += sizeInPixels.width + m_extraKerning;
+
+        // update longest line
+        if (longestLine < nextX) {
+            longestLine = nextX;
+        }
+
+        this->addChild(node, 0, m_customNodes.size());
+        currentLine.push_back(node);
+        m_customNodes.push_back(node);
     }
 }
 
@@ -957,6 +1002,9 @@ void Label::updateChars() {
     m_lines.clear();
     m_lines.reserve(lines);
 
+    m_sprites.clear();
+    m_sprites.reserve(stringLen);
+
     auto commonHeight = m_fontConfig->getCommonHeight();
     auto lineHeight = commonHeight + m_extraLineSpacing;
 
@@ -969,7 +1017,7 @@ void Label::updateChars() {
     float longestLine = 0;
     auto scaleFactor = cocos2d::CCDirector::get()->getContentScaleFactor();
 
-    std::vector<cocos2d::CCSprite*> currentLine;
+    std::vector<CCNode*> currentLine;
     std::vector<size_t> indices(m_fontBatches.size() + 1, 0);
     size_t emojiIndex = 0;
 
@@ -1019,6 +1067,7 @@ void Label::updateChars() {
         // Re-using existing sprites for performance reasons
         auto fontChar = getSpriteForChar(*batch, index, scale, rect);
         currentLine.push_back(fontChar);
+        m_sprites.push_back(fontChar);
 
         rect.size.width *= scale;
         rect.size.height *= scale;
@@ -1056,27 +1105,23 @@ void Label::updateChars() {
 }
 
 void Label::updateColors() const {
-    for (auto& line : m_lines) {
-        for (auto& charSprite : line) {
-            if (m_useEmojiColors) {
-                charSprite->updateDisplayedColor(m_color);
-                continue;
-            }
+    for (auto sprite : m_sprites) {
+        if (m_useEmojiColors) {
+            sprite->updateDisplayedColor(m_color);
+            continue;
+        }
 
-            if (charSprite->m_pParent == m_spriteSheetBatch.node) {
-                charSprite->updateDisplayedColor(cocos2d::ccc3(255, 255, 255));
-            } else {
-                charSprite->updateDisplayedColor(m_color);
-            }
+        if (sprite->m_pParent == m_spriteSheetBatch.node) {
+            sprite->updateDisplayedColor(cocos2d::ccc3(255, 255, 255));
+        } else {
+            sprite->updateDisplayedColor(m_color);
         }
     }
 }
 
 void Label::updateOpacity() const {
-    for (auto& line : m_lines) {
-        for (auto& charSprite : line) {
-            charSprite->updateDisplayedOpacity(m_opacity);
-        }
+    for (auto sprite : m_sprites) {
+        sprite->updateDisplayedOpacity(m_opacity);
     }
 }
 

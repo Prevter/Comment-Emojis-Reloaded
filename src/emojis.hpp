@@ -1,4 +1,5 @@
 #pragma once
+#include "animated-sprite.hpp"
 #include "label.hpp"
 #include "utils.hpp"
 
@@ -190,6 +191,21 @@ namespace custom {
     constexpr custom_emoji<":cyclic:", PlayersBase + 9> PlayerCyclic;
     constexpr custom_emoji<":thesillydoggo:", PlayersBase + 10> PlayerTheSillyDoggo;
     constexpr custom_emoji<":uproxide:", PlayersBase + 11> PlayerUproxide;
+
+    // Animated Emojis
+    constexpr char32_t AnimatedBase = 0x1c600;
+    constexpr animoji<":shiggy:", "shiggy", 10, 0.02f, AnimatedBase> Shiggy;
+    constexpr animoji<":hype:", "hype", 10, 0.07f, AnimatedBase + 1> Hype;
+    constexpr animoji<":petmaurice:", "petmaurice", 5, 0.05f, AnimatedBase + 2> PetMaurice;
+    constexpr animoji<":bonk:", "bonk", 17, 0.06f, AnimatedBase + 3> Bonk;
+    constexpr animoji<":partying:", "partying", 12, 0.04f, AnimatedBase + 4> Partying;
+    constexpr animoji<":ned_explosion:", "ned_explosion", 12, 0.02f, AnimatedBase + 5> NedExplosion;
+    constexpr animoji<":polarbear:", "polarbear", 13, 0.03f, AnimatedBase + 6> PolarBear;
+    constexpr animoji<":colonthreecat:", "colonthreecat", 111, 0.03f, AnimatedBase + 7> ColonThreeCat;
+    constexpr animoji<":cubedance:", "cubedance", 6, 0.07f, AnimatedBase + 8> CubeDance;
+    constexpr animoji<":cubespeen:", "cubespeen", 12, 0.04f, AnimatedBase + 9> CubeSpeen;
+    constexpr animoji<":cubehyperthink:", "cubehyperthink", 6, 0.05f, AnimatedBase + 10> CubeHyperThink;
+    constexpr animoji<":deltaruneexplosion:", "deltaruneexplosion", 17, 1.f / 17.f, AnimatedBase + 11> DeltaruneExplosion;
 }
 
 static std::initializer_list<Emoji> EmojiReplacements = {
@@ -327,6 +343,20 @@ static std::initializer_list<Emoji> EmojiReplacements = {
     Emoji{":six:", "6️⃣"}, Emoji{":seven:", "7️⃣"},
     Emoji{":eight:", "8️⃣"}, Emoji{":nine:", "9️⃣"},
 
+    // Animated Emojis
+    custom::Shiggy,
+    custom::Hype,
+    custom::PetMaurice,
+    custom::Bonk,
+    custom::Partying,
+    custom::NedExplosion,
+    custom::PolarBear,
+    custom::ColonThreeCat,
+    custom::CubeDance,
+    custom::CubeSpeen,
+    custom::CubeHyperThink,
+    custom::DeltaruneExplosion,
+
     // alt names
     Emoji{":shocked_face:", "😱"},
     Emoji{":folded_hands:", "🙏"},
@@ -424,4 +454,19 @@ static Label::EmojiMap EmojiSheet = {
     U"0️⃣"_emoji, U"1️⃣"_emoji, U"2️⃣"_emoji, U"3️⃣"_emoji,
     U"4️⃣"_emoji, U"5️⃣"_emoji, U"6️⃣"_emoji, U"7️⃣"_emoji,
     U"8️⃣"_emoji, U"9️⃣"_emoji,
+};
+
+static Label::CustomNodeMap CustomNodeSheet = {
+    custom::Shiggy,
+    custom::Hype,
+    custom::PetMaurice,
+    custom::Bonk,
+    custom::Partying,
+    custom::NedExplosion,
+    custom::PolarBear,
+    custom::ColonThreeCat,
+    custom::CubeDance,
+    custom::CubeSpeen,
+    custom::CubeHyperThink,
+    custom::DeltaruneExplosion,
 };

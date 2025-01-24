@@ -20,6 +20,20 @@
 				"resources/emojis/cube/*.png",
 				"resources/emojis/cat/*.png",
 				"resources/emojis/players/*.png"
+			],
+			"AnimojiSheet": [
+				"resources/emojis/animated/bonk/*.png",
+				"resources/emojis/animated/colonthreecat/*.png",
+				"resources/emojis/animated/cubedance/*.png",
+				"resources/emojis/animated/cubehyperthink/*.png",
+				"resources/emojis/animated/cubespeen/*.png",
+				"resources/emojis/animated/deltaruneexplosion/*.png",
+				"resources/emojis/animated/hype/*.png",
+				"resources/emojis/animated/ned_explosion/*.png",
+				"resources/emojis/animated/partying/*.png",
+				"resources/emojis/animated/petmaurice/*.png",
+				"resources/emojis/animated/polarbear/*.png",
+				"resources/emojis/animated/shiggy/*.png"
 			]
 		}
 	},

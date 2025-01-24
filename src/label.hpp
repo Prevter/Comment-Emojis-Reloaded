@@ -105,6 +105,7 @@ public:
 
 public:
     using EmojiMap = std::unordered_map<std::u32string_view, const char*>;
+    using CustomNodeMap = std::unordered_map<std::u32string_view, std::function<CCNode*(std::u32string_view, uint32_t&)>>;
 
     /// @brief Set the contents of the label.
     void setString(std::string_view text);
@@ -116,6 +117,8 @@ public:
     void addFont(std::string_view font, std::optional<float> scale = std::nullopt);
     /// @brief Activate support for emojis in the label.
     void enableEmojis(std::string_view sheetFileName, const EmojiMap* frameNames);
+    /// @brief Activate support for custom nodes in the label.
+    void enableCustomNodes(const CustomNodeMap* nodes);
     /// @brief Enable or disable line wrapping.
     void setWrapEnabled(bool enabled);
     /// @brief Set the wrap width of the label.
@@ -164,7 +167,7 @@ protected:
     static float kerningAmountForChars(uint32_t first, uint32_t second, const BMFontConfiguration* config);
 
     /// @brief Hide all characters of the label.
-    void hideAllChars() const;
+    void hideAllChars();
 
     /// @brief Update the characters of the label when it is not left-aligned.
     void updateAlignment() const;
@@ -189,7 +192,7 @@ protected:
     void checkForEmoji(
         std::u32string_view text, uint32_t& index,
         float scaleFactor, float& nextX, float nextY, float commonHeight,
-        float& longestLine, std::vector<cocos2d::CCSprite*>& currentLine,
+        float& longestLine, std::vector<CCNode*>& currentLine,
         size_t& emojiIndex
     );
 
@@ -273,7 +276,7 @@ protected:
     CachedBatch m_mainBatch;            // Primary font batch
     CachedBatch m_spriteSheetBatch;     // Sprite sheet batch for emoji characters
     std::vector<FontCfg> m_fontBatches; // Font batches for alternate fonts
-    //  std::vector<cocos2d::CCSprite*> m_sprites;            // Classic sprites
+    std::vector<CCNode*> m_customNodes; // Custom nodes to be added to the label
 
     // Internal properties
     //  struct Chunk {
@@ -284,8 +287,10 @@ protected:
     //      cocos2d::CCSprite* sprite = nullptr;
     //  };
 
-    const EmojiMap* m_emojiMap = nullptr;                 // emoji map (MAP SHOULD BE GLOBAL AND NEVER DESTROYED)
-    std::vector<std::vector<cocos2d::CCSprite*>> m_lines; // lines of characters
-    //  std::vector<Chunk> m_chunks;                      // chunks containing metadata
-    //  bool m_useChunks = false;                         // whether to use chunks instead of raw text
+    const EmojiMap* m_emojiMap = nullptr;            // emoji map (MAP SHOULD BE GLOBAL AND NEVER DESTROYED)
+    const CustomNodeMap* m_customNodeMap = nullptr;  // custom node map (MAP SHOULD BE GLOBAL AND NEVER DESTROYED)
+    std::vector<std::vector<CCNode*>> m_lines;       // lines of characters
+    std::vector<cocos2d::CCSprite*> m_sprites;       // all sprites in the label (for faster access)
+    //  std::vector<Chunk> m_chunks;                 // chunks containing metadata
+    //  bool m_useChunks = false;                    // whether to use chunks instead of raw text
 };

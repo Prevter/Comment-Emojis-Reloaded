@@ -100,8 +100,6 @@ constexpr std::pair<std::u32string_view, const char*> Sprite = {
     SingleEmoji<C>.filename
 };
 
-constexpr auto test = Sprite<0x1F1E6>;
-
 struct Emoji {
     std::string_view name;
     std::string_view emoji;
@@ -134,4 +132,23 @@ struct custom_emoji {
 
     constexpr operator Label::EmojiMap::value_type() const { return sprite; }
     constexpr operator Emoji() const { return emoji; }
+};
+
+template <geode::geode_internal::StringConcatModIDSlash Prefix, size_t FrameCount, float FrameTime>
+cocos2d::CCNode* GetFrameAnimation(std::u32string_view, uint32_t&) {
+    return FrameAnimation::create(Prefix.buffer, FrameCount, FrameTime);
+}
+
+template <StringLiteral Name, geode::geode_internal::StringConcatModIDSlash Prefix, size_t FrameCount, float FrameTime, char32_t C>
+struct animoji {
+    static constexpr auto emoji = CustomEmoji<Name, C>;
+    static constexpr char32_t value = C;
+
+    constexpr operator Emoji() const { return emoji; }
+    operator Label::CustomNodeMap::value_type() const {
+        return {
+            std::u32string_view(SingleEmoji<C>.value, SingleEmoji<C>.length),
+            GetFrameAnimation<Prefix, FrameCount, FrameTime>
+        };
+    }
 };
