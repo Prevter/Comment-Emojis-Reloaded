@@ -240,3 +240,17 @@ Has improved performance and stability over the original mod.
 - :cyclic:
 - :thesillydoggo:
 - :uproxide:
+
+**Animated Emojis**:
+- :shiggy:
+- :hype:
+- :petmaurice:
+- :bonk:
+- :partying:
+- :ned_explosion:
+- :polarbear:
+- :colonthreecat:
+- :cubedance:
+- :cubespeen:
+- :cubehyperthink:
+- :deltaruneexplosion:
