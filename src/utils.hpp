@@ -24,9 +24,12 @@ inline void findAndReplace(std::string& str, std::string_view find, std::string_
 
 template <size_t N>
 struct StringLiteral {
+    static constexpr size_t Size = N;
     char value[N]{};
+    constexpr StringLiteral() = default;
     constexpr StringLiteral(const char (&str)[N]) { std::copy_n(str, N, value); }
     constexpr operator std::string_view() const { return { value, N - 1 }; }
+    constexpr operator geode::geode_internal::StringConcatModIDSlash<N>() const { return value; }
 };
 
 template <size_t N>
@@ -134,21 +137,29 @@ struct custom_emoji {
     constexpr operator Emoji() const { return emoji; }
 };
 
-template <geode::geode_internal::StringConcatModIDSlash Prefix, size_t FrameCount, float FrameTime>
+template <geode::geode_internal::StringConcatModIDSlash Prefix, size_t FrameCount, size_t FPS>
 cocos2d::CCNode* GetFrameAnimation(std::u32string_view, uint32_t&) {
-    return FrameAnimation::create(Prefix.buffer, FrameCount, FrameTime);
+    return FrameAnimation::create(Prefix.buffer, FrameCount, 1.f / FPS);
 }
 
-template <StringLiteral Name, geode::geode_internal::StringConcatModIDSlash Prefix, size_t FrameCount, float FrameTime, char32_t C>
+template <StringLiteral Name, size_t FrameCount, size_t FPS, char32_t C>
 struct animoji {
-    static constexpr auto emoji = CustomEmoji<Name, C>;
+    static constexpr auto Name2 = []{
+        StringLiteral<Name.Size + 2> name;
+        name.value[0] = ':';
+        std::copy_n(Name.value, Name.Size, name.value + 1);
+        name.value[Name.Size] = ':';
+        return name;
+    }();
+    static constexpr auto emoji = CustomEmoji<Name2, C>;
+    static constexpr geode::geode_internal::StringConcatModIDSlash<Name.Size> prefix = Name;
     static constexpr char32_t value = C;
 
     constexpr operator Emoji() const { return emoji; }
     operator Label::CustomNodeMap::value_type() const {
         return {
             std::u32string_view(SingleEmoji<C>.value, SingleEmoji<C>.length),
-            GetFrameAnimation<Prefix, FrameCount, FrameTime>
+            GetFrameAnimation<prefix, FrameCount, FPS>
         };
     }
 };

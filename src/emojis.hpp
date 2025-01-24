@@ -194,18 +194,18 @@ namespace custom {
 
     // Animated Emojis
     constexpr char32_t AnimatedBase = 0x1c600;
-    constexpr animoji<":shiggy:", "shiggy", 10, 0.02f, AnimatedBase> Shiggy;
-    constexpr animoji<":hype:", "hype", 10, 0.07f, AnimatedBase + 1> Hype;
-    constexpr animoji<":petmaurice:", "petmaurice", 5, 0.05f, AnimatedBase + 2> PetMaurice;
-    constexpr animoji<":bonk:", "bonk", 17, 0.06f, AnimatedBase + 3> Bonk;
-    constexpr animoji<":partying:", "partying", 12, 0.04f, AnimatedBase + 4> Partying;
-    constexpr animoji<":ned_explosion:", "ned_explosion", 12, 0.02f, AnimatedBase + 5> NedExplosion;
-    constexpr animoji<":polarbear:", "polarbear", 13, 0.03f, AnimatedBase + 6> PolarBear;
-    constexpr animoji<":colonthreecat:", "colonthreecat", 111, 0.03f, AnimatedBase + 7> ColonThreeCat;
-    constexpr animoji<":cubedance:", "cubedance", 6, 0.07f, AnimatedBase + 8> CubeDance;
-    constexpr animoji<":cubespeen:", "cubespeen", 12, 0.04f, AnimatedBase + 9> CubeSpeen;
-    constexpr animoji<":cubehyperthink:", "cubehyperthink", 6, 0.05f, AnimatedBase + 10> CubeHyperThink;
-    constexpr animoji<":deltaruneexplosion:", "deltaruneexplosion", 17, 1.f / 17.f, AnimatedBase + 11> DeltaruneExplosion;
+    constexpr animoji<"shiggy", 10, 50, AnimatedBase> Shiggy;
+    constexpr animoji<"hype", 10, 14, AnimatedBase + 1> Hype;
+    constexpr animoji<"petmaurice", 5, 20, AnimatedBase + 2> PetMaurice;
+    constexpr animoji<"bonk", 17, 16, AnimatedBase + 3> Bonk;
+    constexpr animoji<"partying", 12, 25, AnimatedBase + 4> Partying;
+    constexpr animoji<"ned_explosion", 12, 50, AnimatedBase + 5> NedExplosion;
+    constexpr animoji<"polarbear", 13, 33, AnimatedBase + 6> PolarBear;
+    constexpr animoji<"colonthreecat", 111, 33, AnimatedBase + 7> ColonThreeCat;
+    constexpr animoji<"cubedance", 6, 14, AnimatedBase + 8> CubeDance;
+    constexpr animoji<"cubespeen", 12, 25, AnimatedBase + 9> CubeSpeen;
+    constexpr animoji<"cubehyperthink", 6, 20, AnimatedBase + 10> CubeHyperThink;
+    constexpr animoji<"deltaruneexplosion", 17, 17, AnimatedBase + 11> DeltaruneExplosion;
 }
 
 static std::initializer_list<Emoji> EmojiReplacements = {
