@@ -23,17 +23,29 @@ BMFontConfiguration* BMFontConfiguration::create(std::string_view fntFile) {
 
 bool BMFontConfiguration::initWithFNTfile(std::string_view fntFile) {
     std::string fntFileStr(fntFile);
-    std::string fullPath =cocos2d::CCFileUtils::get()->fullPathForFilename(fntFileStr.c_str(), false);
-
-    auto contents = geode::utils::file::readString(fullPath).unwrapOrDefault();
-    if (contents.empty()) {
+    #ifdef GEODE_IS_ANDROID
+    // on android, accessing internal assets manually won't work,
+    // so we're just going to use cocos functions as intended
+    auto ccString = cocos2d::CCString::createWithContentsOfFile(fntFileStr.c_str());
+    if (!ccString) {
+        geode::log::error("Failed to read file '{}'", fntFileStr);
         return false;
     }
+    auto contents = ccString->getCString();
+    #else
+    // for non-android, we can speed up reading by doing it manually
+    std::string fullPath = cocos2d::CCFileUtils::get()->fullPathForFilename(fntFileStr.c_str(), false);
+    auto contents = geode::utils::file::readString(fullPath).unwrapOrDefault();
+    if (contents.empty()) {
+        geode::log::error("Failed to read file '{}'", fullPath);
+        return false;
+    }
+    #endif
 
     return initWithContents(contents, fntFileStr);
 }
 
-#define WRAP_PARSE(expr) if (!(expr)) return false
+#define WRAP_PARSE(expr) if (auto res = (expr); res.isErr()) { geode::log::error("{}", res.unwrapErr()); return false; }
 
 bool BMFontConfiguration::initWithContents(std::string const& contents, std::string const& fntFile) {
     std::istringstream stream(contents);
@@ -69,7 +81,7 @@ T fastParse(std::string_view str) {
     return geode::utils::numFromString<T>(str).unwrapOrDefault();
 }
 
-bool BMFontConfiguration::parseInfoArguments(std::istringstream& line) {
+geode::Result<> BMFontConfiguration::parseInfoArguments(std::istringstream& line) {
     std::string keypair;
 
     while (line >> keypair) {
@@ -88,10 +100,10 @@ bool BMFontConfiguration::parseInfoArguments(std::istringstream& line) {
         }
     }
 
-    return true;
+    return geode::Ok();
 }
 
-bool BMFontConfiguration::parseImageFileName(std::istringstream& line, std::string const& fntFile) {
+geode::Result<> BMFontConfiguration::parseImageFileName(std::istringstream& line, std::string const& fntFile) {
     std::string keypair;
 
     while (line >> keypair) {
@@ -112,13 +124,13 @@ bool BMFontConfiguration::parseImageFileName(std::istringstream& line, std::stri
     }
 
     if (m_atlasName.empty()) {
-        return false;
+        return geode::Err("Failed to parse image file name");
     }
 
-    return true;
+    return geode::Ok();
 }
 
-bool BMFontConfiguration::parseCommonArguments(std::istringstream& line) {
+geode::Result<> BMFontConfiguration::parseCommonArguments(std::istringstream& line) {
     std::string keypair;
 
     while (line >> keypair) {
@@ -134,19 +146,19 @@ bool BMFontConfiguration::parseCommonArguments(std::istringstream& line) {
             m_commonHeight = fastParse<float>(value);
         } else if (key == "scaleW" || key == "scaleH") {
             if (fastParse<int>(value) > cocos2d::CCConfiguration::sharedConfiguration()->m_nMaxTextureSize) {
-                return false;
+                return geode::Err("Font size exceeds max texture size");
             }
         } else if (key == "pages") {
             if (fastParse<int>(value) != 1) {
-                return false;
+                return geode::Err("Font must have exactly one page");
             }
         }
     }
 
-    return true;
+    return geode::Ok();
 }
 
-bool BMFontConfiguration::parseCharacterDefinition(std::istringstream& line) {
+geode::Result<> BMFontConfiguration::parseCharacterDefinition(std::istringstream& line) {
     BMFontDef def;
     std::string keypair;
 
@@ -181,10 +193,10 @@ bool BMFontConfiguration::parseCharacterDefinition(std::istringstream& line) {
     m_fontDefDictionary[def.charID] = def;
     // m_characterSet.insert(def.charID);
 
-    return true;
+    return geode::Ok();
 }
 
-bool BMFontConfiguration::parseKerningEntry(std::istringstream& line) {
+geode::Result<> BMFontConfiguration::parseKerningEntry(std::istringstream& line) {
     std::string keypair;
 
     while (line >> keypair) {
@@ -201,14 +213,14 @@ bool BMFontConfiguration::parseKerningEntry(std::istringstream& line) {
             line >> keypair;
             eqPos = keypair.find('=');
             if (eqPos == std::string::npos) {
-                return false;
+                return geode::Err("Failed to parse kerning entry first");
             }
 
             auto second = fastParse<uint32_t>(keypair.substr(eqPos + 1));
             line >> keypair;
             eqPos = keypair.find('=');
             if (eqPos == std::string::npos) {
-                return false;
+                return geode::Err("Failed to parse kerning entry second");
             }
 
             auto amount = fastParse<float>(keypair.substr(eqPos + 1));
@@ -216,7 +228,7 @@ bool BMFontConfiguration::parseKerningEntry(std::istringstream& line) {
         }
     }
 
-    return true;
+    return geode::Ok();
 }
 
 #undef WRAP_PARSE
@@ -272,6 +284,33 @@ constexpr static bool isDigit(char32_t c) {
 constexpr static bool shouldParseDigitRegionalIndicator(std::u32string_view text) {
     return isDigit(text[0]) && text.size() > 2 && text[2] == 0x20E3 && isVariationSelector(text[1]);
 }
+
+// Custom math stuff
+
+struct Vector {
+    union {
+        struct { float x, y; };
+        struct { float width, height; };
+    };
+    constexpr Vector() noexcept : x(0.f), y(0.f) {}
+    constexpr Vector(float x_, float y_) noexcept : x(x_), y(y_) {}
+    constexpr operator cocos2d::CCPoint() const { return cocos2d::CCPoint { x, y }; }
+    constexpr operator cocos2d::CCSize() const { return cocos2d::CCSize { x, y }; }
+};
+
+struct Rect {
+    Vector origin;
+    Vector size;
+    constexpr Rect() noexcept = default;
+    constexpr Rect(float x, float y, float w, float h) noexcept : origin(x, y), size(w, h) {}
+    constexpr operator cocos2d::CCRect() const { return cocos2d::CCRect { origin, size }; }
+    constexpr void setRect(float x, float y, float width, float height) {
+        origin.x = x;
+        origin.y = y;
+        size.width = width;
+        size.height = height;
+    }
+};
 
 Label* Label::create(std::string_view text, std::string_view font) {
     auto ret = new Label();
@@ -662,7 +701,7 @@ void Label::updateCharsWrapped() {
                 auto& index = indices[fontIndex];
                 kerningAmount = kerningAmountForChars(prevChar, c, currentConfig) * scale;
 
-                cocos2d::CCRect rect = {
+                Rect rect = {
                     fontDef->rect.origin.x / scaleFactor, fontDef->rect.origin.y / scaleFactor,
                     fontDef->rect.size.width / scaleFactor, fontDef->rect.size.height / scaleFactor
                 };
@@ -964,8 +1003,8 @@ cocos2d::CCSprite* Label::getSpriteForChar(
         fontChar->setOpacityModifyRGB(m_isOpacityModifyRGB);
 
         // Color MUST be set before opacity, since opacity might change color if OpacityModifyRGB is on
-        fontChar->updateDisplayedColor(m_color);
-        fontChar->updateDisplayedOpacity(m_opacity);
+        fontChar->setColor(m_color);
+        fontChar->setOpacity(m_opacity);
     } else {
         // reusing existing sprite
         fontChar->m_bVisible = true;
@@ -1059,7 +1098,7 @@ void Label::updateChars() {
         auto& index = indices[fontIndex];
         kerningAmount = kerningAmountForChars(prevChar, c, currentConfig) * scale;
 
-        cocos2d::CCRect rect = {
+        Rect rect = {
             fontDef->rect.origin.x / scaleFactor, fontDef->rect.origin.y / scaleFactor,
             fontDef->rect.size.width / scaleFactor, fontDef->rect.size.height / scaleFactor
         };
@@ -1073,7 +1112,7 @@ void Label::updateChars() {
         rect.size.height *= scale;
 
         float yOffset = commonHeight - fontDef->yOffset * scale;
-        cocos2d::CCPoint fontPos = {
+        Vector fontPos = {
             nextX + fontDef->xOffset * scale + fontDef->rect.size.width * 0.5f * scale + kerningAmount,
             nextY + yOffset - rect.size.height * 0.5f * scaleFactor
         };
@@ -1107,21 +1146,21 @@ void Label::updateChars() {
 void Label::updateColors() const {
     for (auto sprite : m_sprites) {
         if (m_useEmojiColors) {
-            sprite->updateDisplayedColor(m_color);
+            sprite->setColor(m_color);
             continue;
         }
 
         if (sprite->m_pParent == m_spriteSheetBatch.node) {
-            sprite->updateDisplayedColor(cocos2d::ccc3(255, 255, 255));
+            sprite->setColor(cocos2d::ccc3(255, 255, 255));
         } else {
-            sprite->updateDisplayedColor(m_color);
+            sprite->setColor(m_color);
         }
     }
 }
 
 void Label::updateOpacity() const {
     for (auto sprite : m_sprites) {
-        sprite->updateDisplayedOpacity(m_opacity);
+        sprite->setOpacity(m_opacity);
     }
 }
 

@@ -44,11 +44,11 @@ protected:
     bool initWithContents(std::string const& contents, std::string const& fntFile);
 
 private:
-    bool parseInfoArguments(std::istringstream& line);
-    bool parseImageFileName(std::istringstream& line, std::string const& fntFile);
-    bool parseCommonArguments(std::istringstream& line);
-    bool parseCharacterDefinition(std::istringstream& line);
-    bool parseKerningEntry(std::istringstream& line);
+    geode::Result<> parseInfoArguments(std::istringstream& line);
+    geode::Result<> parseImageFileName(std::istringstream& line, std::string const& fntFile);
+    geode::Result<> parseCommonArguments(std::istringstream& line);
+    geode::Result<> parseCharacterDefinition(std::istringstream& line);
+    geode::Result<> parseKerningEntry(std::istringstream& line);
 
 public:
     std::unordered_map<uint32_t, BMFontDef> const& getFontDefDictionary() const { return m_fontDefDictionary; }
