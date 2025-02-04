@@ -67,6 +67,8 @@ Has improved performance and stability over the original mod.
 - :five:
 - :seven:
 - :nine:
+- :sunglasses:
+- :heart_eyes:
 
 **Geometry Dash Icons**:
 - :star:
@@ -166,6 +168,9 @@ Has improved performance and stability over the original mod.
 - :freakbob:
 - :nuhuh:
 - :yuhuh:
+- :eyesShock:
+- :trollskull:
+- :slight_smile:
 
 **Cube Emotes (By @cyanflower)**:
 - :boshytime:
@@ -254,3 +259,4 @@ Has improved performance and stability over the original mod.
 - :cubespeen:
 - :cubehyperthink:
 - :deltaruneexplosion:
+- :trolleyzoom:

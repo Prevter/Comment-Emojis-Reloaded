@@ -192,7 +192,13 @@ namespace custom {
     constexpr custom_emoji<":thesillydoggo:", PlayersBase + 10> PlayerTheSillyDoggo;
     constexpr custom_emoji<":uproxide:", PlayersBase + 11> PlayerUproxide;
 
-    // Animated Emojis
+    // Custom Emojis
+    constexpr char32_t CustomBase = 0x1c100;
+    constexpr custom_emoji<":eyesShock:", CustomBase> EyesShock;
+    constexpr custom_emoji<":trollskull:", CustomBase + 1> TrollSkull;
+    constexpr custom_emoji<":slight_smile:", CustomBase + 2> SlightSmile;
+
+    // Legacy Animated Emojis
     constexpr char32_t AnimatedBase = 0x1c600;
     constexpr animoji<"shiggy", 10, 50, AnimatedBase> Shiggy;
     constexpr animoji<"hype", 10, 14, AnimatedBase + 1> Hype;
@@ -206,6 +212,9 @@ namespace custom {
     constexpr animoji<"cubespeen", 12, 25, AnimatedBase + 9> CubeSpeen;
     constexpr animoji<"cubehyperthink", 6, 20, AnimatedBase + 10> CubeHyperThink;
     constexpr animoji<"deltaruneexplosion", 17, 17, AnimatedBase + 11> DeltaruneExplosion;
+
+    // Animated Emojis
+    constexpr animoji<"trolleyzoom", 178, 25, AnimatedBase + 12> TrolleyZoom;
 }
 
 static std::initializer_list<Emoji> EmojiReplacements = {
@@ -276,6 +285,9 @@ static std::initializer_list<Emoji> EmojiReplacements = {
     custom::PlayerWulzy, custom::PlayerJuniper, custom::PlayerRiot,
     custom::PlayerCyclic, custom::PlayerTheSillyDoggo, custom::PlayerUproxide,
 
+    // Custom Emojis
+    custom::EyesShock, custom::TrollSkull, custom::SlightSmile,
+
     // Geometry Dash icons
     Emoji{":star:", "⭐"}, Emoji{":moon:", "🌙"},
     Emoji{":check:", "✔️"}, Emoji{":cross:", "❌"},
@@ -335,6 +347,8 @@ static std::initializer_list<Emoji> EmojiReplacements = {
     Emoji{":pray:", "🙏"},
     Emoji{":bangbang:", "‼️"},
     Emoji{":question:", "❓"},
+    Emoji{":sunglasses:", "😎"},
+    Emoji{":heart_eyes:", "😍"},
 
     // Regional Indicators
     Emoji{":zero:", "0️⃣"}, Emoji{":one:", "1️⃣"},
@@ -343,7 +357,7 @@ static std::initializer_list<Emoji> EmojiReplacements = {
     Emoji{":six:", "6️⃣"}, Emoji{":seven:", "7️⃣"},
     Emoji{":eight:", "8️⃣"}, Emoji{":nine:", "9️⃣"},
 
-    // Animated Emojis
+    // Legacy Animated Emojis
     custom::Shiggy,
     custom::Hype,
     custom::PetMaurice,
@@ -356,6 +370,9 @@ static std::initializer_list<Emoji> EmojiReplacements = {
     custom::CubeSpeen,
     custom::CubeHyperThink,
     custom::DeltaruneExplosion,
+
+    // Animated Emojis
+    custom::TrolleyZoom,
 
     // alt names
     Emoji{":shocked_face:", "😱"},
@@ -430,6 +447,9 @@ static Label::EmojiMap EmojiSheet = {
     custom::PlayerWulzy, custom::PlayerJuniper, custom::PlayerRiot,
     custom::PlayerCyclic, custom::PlayerTheSillyDoggo, custom::PlayerUproxide,
 
+    // Custom Emojis
+    custom::EyesShock, custom::TrollSkull, custom::SlightSmile,
+
     // Geometry Dash icons
     U"⭐"_emoji, U"🌙"_emoji,
     U"✔️"_emoji, U"❌"_emoji,
@@ -448,7 +468,7 @@ static Label::EmojiMap EmojiSheet = {
     U"✨"_emoji, U"🎉"_emoji, U"🐷"_emoji, U"🌚"_emoji, U"🌗"_emoji,
     U"🌑"_emoji, U"🌞"_emoji, U"🌝"_emoji, U"🐵"_emoji, U"🙈"_emoji,
     U"🙉"_emoji, U"🙊"_emoji, U"👑"_emoji, U"🙏"_emoji, U"‼️"_emoji,
-    U"❓"_emoji,
+    U"❓"_emoji, U"😎"_emoji, U"😍"_emoji,
 
     // Regional Indicators
     U"0️⃣"_emoji, U"1️⃣"_emoji, U"2️⃣"_emoji, U"3️⃣"_emoji,
@@ -457,6 +477,16 @@ static Label::EmojiMap EmojiSheet = {
 };
 
 static Label::CustomNodeMap CustomNodeSheet = {
+    {
+        U"\U0001c300", [](std::u32string_view, uint32_t&) {
+            auto level = LevelTools::getLevel(1, false);
+            auto scene = PlayLayer::scene(level, false, false);
+            auto playLayer = scene->getChildByType<PlayLayer>(0);
+            playLayer->ignoreAnchorPointForPosition(false);
+            return playLayer;
+        }
+    },
+    // Legacy Animated Emojis
     custom::Shiggy,
     custom::Hype,
     custom::PetMaurice,
@@ -469,4 +499,7 @@ static Label::CustomNodeMap CustomNodeSheet = {
     custom::CubeSpeen,
     custom::CubeHyperThink,
     custom::DeltaruneExplosion,
+
+    // Animated Emojis
+    custom::TrolleyZoom,
 };

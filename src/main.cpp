@@ -88,6 +88,7 @@ class $modify(CommentCellHook, CommentCell) {
         }
 
         newText->setColor(changedColor);
+        newText->enableCustomNodes(&CustomNodeSheet);
         newText->enableEmojis("EmojiSheet.png"_spr, &EmojiSheet);
         newText->setString(commentString);
         newText->limitLabelWidth(maxWidth, defaultScale, 0.1f);

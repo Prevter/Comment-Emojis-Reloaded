@@ -18,6 +18,7 @@
 				"resources/emojis/geometrydash/*.png",
 				"resources/emojis/legacy/*.png",
 				"resources/emojis/cube/*.png",
+				"resources/emojis/custom/*.png",
 				"resources/emojis/cat/*.png",
 				"resources/emojis/players/*.png"
 			],
@@ -33,7 +34,8 @@
 				"resources/emojis/animated/partying/*.png",
 				"resources/emojis/animated/petmaurice/*.png",
 				"resources/emojis/animated/polarbear/*.png",
-				"resources/emojis/animated/shiggy/*.png"
+				"resources/emojis/animated/shiggy/*.png",
+				"resources/emojis/animated/trolleyzoom/*.png"
 			]
 		}
 	},
