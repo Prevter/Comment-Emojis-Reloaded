@@ -217,7 +217,7 @@ namespace custom {
     constexpr animoji<"trolleyzoom", 178, 25, AnimatedBase + 12> TrolleyZoom;
 }
 
-static std::initializer_list<Emoji> EmojiReplacements = {
+inline static std::initializer_list<Emoji> EmojiReplacements = {
     // Level difficulties
     custom::DiffNA, custom::DiffAuto, custom::DiffEasy,
     custom::DiffNormal, custom::DiffHard, custom::DiffHarder,
@@ -379,7 +379,7 @@ static std::initializer_list<Emoji> EmojiReplacements = {
     Emoji{":folded_hands:", "🙏"},
 };
 
-static Label::EmojiMap EmojiSheet = {
+inline static Label::EmojiMap EmojiSheet = {
     // Level difficulties
     custom::DiffNA, custom::DiffAuto, custom::DiffEasy,
     custom::DiffNormal, custom::DiffHard, custom::DiffHarder,
@@ -476,7 +476,7 @@ static Label::EmojiMap EmojiSheet = {
     U"8️⃣"_emoji, U"9️⃣"_emoji,
 };
 
-static Label::CustomNodeMap CustomNodeSheet = {
+inline static Label::CustomNodeMap CustomNodeSheet = {
     {
         U"\U0001c300", [](std::u32string_view, uint32_t&) {
             auto level = LevelTools::getLevel(1, false);

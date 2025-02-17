@@ -1,4 +1,8 @@
 #include <Geode/modify/CommentCell.hpp>
+#include <Geode/modify/GameManager.hpp>
+#include <Geode/modify/ShareCommentLayer.hpp>
+
+#include "emoji-picker.hpp"
 #include "emojis.hpp"
 
 std::string replaceEmojis(std::string_view text) {
@@ -8,6 +12,13 @@ std::string replaceEmojis(std::string_view text) {
     }
     return result;
 }
+
+class $modify(ClearFontCacheHook, GameManager) {
+    void reloadAllStep5() {
+        GameManager::reloadAllStep5();
+        BMFontConfiguration::purgeCachedData();
+    }
+};
 
 // Testing stuff
 // #include <Geode/modify/MenuLayer.hpp>
@@ -94,5 +105,24 @@ class $modify(CommentCellHook, CommentCell) {
         newText->limitLabelWidth(maxWidth, defaultScale, 0.1f);
 
         m_mainLayer->addChild(newText);
+    }
+};
+
+class $modify(ShareCommentLayerHook, ShareCommentLayer) {
+    bool init(gd::string title, int charLimit, CommentType type, int ID, gd::string desc) {
+        if (!ShareCommentLayer::init(title, charLimit, type, ID, desc)) {
+            return false;
+        }
+
+        auto btn = geode::cocos::CCMenuItemExt::createSpriteExtraWithFrameName(
+            "diffIcon_02_btn_001.png", 1.f, [this](auto) {
+                EmojiPicker::create(m_commentInput)->show();
+            }
+        );
+        btn->setID("emoji-picker"_spr);
+        btn->setPosition(175.f, 36.5f);
+        this->m_buttonMenu->addChild(btn);
+
+        return true;
     }
 };
