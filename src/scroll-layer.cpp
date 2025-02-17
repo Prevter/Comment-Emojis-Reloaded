@@ -10,16 +10,19 @@ void ScrollLayer::scrollWheel(float pointX, float pointY) {
 }
 
 bool ScrollLayer::ccTouchBegan(cocos2d::CCTouch *touch, cocos2d::CCEvent *event) {
-    if (geode::cocos::nodeIsVisible(this)) {
-        if (CCScrollLayerExt::ccTouchBegan(touch, event)) {
-            m_touchStart = touch;
-            auto touchPos = cocos2d::CCDirector::get()->convertToGL(m_touchStart->getLocationInView());
-            m_touchStartPosition2 = touchPos;
-            m_touchPosition2 = touchPos;
-            m_touchLastY = m_touchPosition2.y;
-            return true;
-        }
+    if (!geode::cocos::nodeIsVisible(this)) {
+        return false;
     }
+
+    if (CCScrollLayerExt::ccTouchBegan(touch, event)) {
+        m_touchStart = touch;
+        auto touchPos = cocos2d::CCDirector::get()->convertToGL(m_touchStart->getLocationInView());
+        m_touchStartPosition2 = touchPos;
+        m_touchPosition2 = touchPos;
+        m_touchLastY = m_touchPosition2.y;
+        return true;
+    }
+
     return false;
 }
 

@@ -8,6 +8,8 @@ protected:
     ScrollLayer* m_scrollLayer = nullptr;
     ScrollLayer* m_sidebarPanel = nullptr;
     geode::Scrollbar* m_scrollbar = nullptr;
+    CCLayer* m_inputLayer = nullptr;
+    bool m_isClosing = false;
 
 public:
     static EmojiPicker* create(CCTextInputNode* input);
@@ -29,4 +31,9 @@ protected:
 
     CCNode* appendGroup(EmojiCategory const& category) const;
     void updateScrollLayer() const;
+
+    void beginClose();
+    void endClose() { this->onClose(nullptr); }
+
+    bool ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
 };
