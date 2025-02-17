@@ -613,6 +613,15 @@ void Label::updateCharsWrapped() {
         if (textSV[i] == ' ') {
             words.push_back(textSV.substr(wordStart, i - wordStart));
             wordStart = i + 1;
+            continue;
+        }
+
+        // check if we should break the word
+        if (m_breakWords > 0 && i - wordStart >= m_breakWords) {
+            words.push_back(textSV.substr(wordStart, i - wordStart));
+            wordStart = i;
+            lines.push_back(std::move(words));
+            words.clear();
         } else if (textSV[i] == '\n') {
             words.push_back(textSV.substr(wordStart, i - wordStart));
             wordStart = i + 1;
@@ -796,9 +805,11 @@ void Label::updateCharsWrapped() {
     // recalculate Y positions
     float commonHeightScaled = (m_lines.size() <= 1 ? commonHeight : lineHeight) / scaleFactor;
     float nextY = commonHeightScaled * m_lines.size() - commonHeightScaled;
+    float maxLineWidth = 0;
     for (auto& line : m_lines) {
         for (auto& sprite : line) {
             sprite->m_obPosition.y += nextY;
+            maxLineWidth = std::max(maxLineWidth, sprite->m_obPosition.x + sprite->m_obContentSize.width * sprite->m_fScaleX);
         }
         nextY -= commonHeightScaled;
     }
@@ -819,7 +830,7 @@ void Label::updateCharsWrapped() {
     // }
     /// ===========
 
-    this->setContentSize({maxWidth, lineHeight * m_lines.size() / scaleFactor});
+    this->setContentSize({maxLineWidth, lineHeight * m_lines.size() / scaleFactor});
 
     this->updateAlignment();
 }

@@ -79,6 +79,7 @@ class $modify(CommentCellHook, CommentCell) {
 
             newText = Label::createWrapped("", "chatFont.fnt", scale, 315.f);
             newText->setExtraLineSpacing(12.f);
+            newText->setBreakWords(48);
             newText->setAnchorPoint({0.f, 0.5f});
             newText->setPosition({10.f, m_accountComment ? 37.f : 32.f});
             newText->setID("comment-text-area"_spr);

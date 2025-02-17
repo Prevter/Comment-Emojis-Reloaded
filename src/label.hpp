@@ -145,6 +145,8 @@ public:
     [[nodiscard]] float getExtraLineSpacing() const { return m_extraLineSpacing; }
     /// @brief Set the extra line spacing
     void setExtraLineSpacing(float spacing) { m_extraLineSpacing = spacing; }
+    /// @brief Set how many characters should be grouped when breaking words (set to -1 to disable)
+    void setBreakWords(int chars) { m_breakWords = chars; }
 
 protected:
     struct CachedBatch {
@@ -261,11 +263,12 @@ protected:
     std::u32string m_unicodeText;                        // UTF-32 encoded text
     BMFontAlignment m_alignment = BMFontAlignment::Left; // text alignment
     BMFontConfiguration* m_fontConfig = nullptr;         // primary font configuration
+    int m_breakWords = -1;                               // break words when wrapping by N chars groups (default -1 = no break)
     bool m_useWrap = false;                              // enable line wrapping
     bool m_useEmojiColors = false;                       // enable emoji colorization
     float m_wrapWidth = 0.f;                             // maximum scaled content width before wrapping
     float m_extraLineSpacing = 0.f;                      // additional spacing between lines
-    float m_extraKerning = 0.f;                            // additional kerning between characters
+    float m_extraKerning = 0.f;                          // additional kerning between characters
 
     // Children
     struct FontCfg {
