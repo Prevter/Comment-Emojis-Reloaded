@@ -39,6 +39,69 @@ protected:
     geode::Ref<CCNode> m_node = nullptr;
 };
 
+class FeedbackButton final : public CCMenuItemSpriteExtra {
+public:
+    static FeedbackButton* create(
+        CCNode* node, std::function<void()> const& callback,
+        std::function<void()> const& onHold = nullptr
+    ) {
+        auto ret = new FeedbackButton();
+        if (ret->init(node, callback, onHold)) {
+            ret->autorelease();
+            return ret;
+        }
+        delete ret;
+        return nullptr;
+    }
+
+protected:
+    void onClicked(CCObject*) {
+        if (m_cancelledTouch) return;
+        m_callback();
+    }
+
+    void onHold() {
+        m_cancelledTouch = true;
+        CCMenuItemSpriteExtra::unselected();
+        m_onHold();
+    }
+
+    void selected() override {
+        m_cancelledTouch = false;
+        if (m_bEnabled) {
+            auto action = cocos2d::CCSequence::create(
+                cocos2d::CCDelayTime::create(1.5f),
+                cocos2d::CCCallFunc::create(this, callfunc_selector(FeedbackButton::onHold)),
+                nullptr
+            );
+            action->setTag(0x1337);
+            this->runAction(action);
+        }
+        CCMenuItemSpriteExtra::selected();
+    }
+
+    void unselected() override {
+        this->stopActionByTag(0x1337);
+        CCMenuItemSpriteExtra::unselected();
+    }
+
+    bool init(CCNode* node, std::function<void()> callback, std::function<void()> onHold) {
+        m_callback = std::move(callback);
+        m_onHold = std::move(onHold);
+
+        if (!CCMenuItemSpriteExtra::init(node, node, this, menu_selector(FeedbackButton::onClicked))) {
+            return false;
+        }
+
+        return true;
+    }
+
+protected:
+    std::function<void()> m_callback = nullptr;
+    std::function<void()> m_onHold = nullptr;
+    bool m_cancelledTouch = false;
+};
+
 inline cocos2d::extension::CCScale9Sprite* createBackground(float width, float height) {
     auto background = cocos2d::extension::CCScale9Sprite::create("square02_001.png");
     background->setScale(0.5f);
@@ -68,70 +131,12 @@ bool EmojiPicker::setup(CCTextInputNode* input) {
     m_scrollLayer->setID("scroll-layer"_spr);
     m_mainLayer->addChildAtPosition(m_scrollLayer, geode::Anchor::BottomLeft, { 40.f, 5.5f });
 
-    auto sidebarMenu = cocos2d::CCMenu::create();
-    sidebarMenu->setAnchorPoint({ 0, 0 });
-    sidebarMenu->setPosition({ 0, 0 });
-    sidebarMenu->ignoreAnchorPointForPosition(true);
-
-    // add dummy node to pad the top
-    auto dummy = CCNode::create();
-    dummy->setContentSize({ 27, 0 });
-    sidebarMenu->addChild(dummy);
-
-    for (auto& category : getEmojiCategories()) {
-        if (category.emojis.empty()) {
-            continue;
-        }
-
-        auto first = createEmojiSprite(category.emojis.front());
-        if (!first) { continue; }
-        first = encloseInContainer(first, 18.f);
-
-        auto groupTop = appendGroup(category);
-        auto btn = geode::cocos::CCMenuItemExt::createSpriteExtra(
-            first, [this, groupTop](auto) {
-                m_scrollLayer->scrollTo(groupTop);
-            }
-        );
-        sidebarMenu->addChild(btn);
-    }
-
-    // add dummy node to pad the bottom
-    dummy = CCNode::create();
-    dummy->setContentSize({ ScrollViewWidth, 0 });
-    m_scrollLayer->m_contentLayer->addChild(dummy);
+    recreateGroups();
 
     auto bg = createBackground(27.f, ScrollViewHeight - 5.f);
     bg->setID("sidebar-bg"_spr);
     bg->setAnchorPoint({ 0, 0 });
     m_mainLayer->addChildAtPosition(bg, geode::Anchor::BottomLeft, { 8.f, 8.f });
-
-    // calculate required height
-    float height = -ScrollGap;
-    for (auto child : geode::cocos::CCArrayExt<CCNode*>(m_scrollLayer->m_contentLayer->getChildren())) {
-        height += child->getContentSize().height + ScrollGap;
-    }
-    m_scrollLayer->m_contentLayer->setContentHeight(std::max(height, ScrollViewHeight));
-
-    height = -5.f;
-    for (auto child : geode::cocos::CCArrayExt<CCNode*>(sidebarMenu->getChildren())) {
-        height += child->getContentSize().height + 5.f;
-    }
-    sidebarMenu->setContentSize({ 27, std::max(height, ScrollViewHeight - 5.f) });
-
-    sidebarMenu->setLayout(
-        geode::ColumnLayout::create()
-            ->setAxisReverse(true)
-            ->setAutoScale(false)
-            ->setAxisAlignment(geode::AxisAlignment::End)
-            ->setCrossAxisAlignment(geode::AxisAlignment::Center)
-            ->setCrossAxisLineAlignment(geode::AxisAlignment::Center)
-            ->setCrossAxisOverflow(false)
-    );
-
-    m_sidebarPanel->setZOrder(1);
-    m_sidebarPanel->m_contentLayer->setContentHeight(std::max(height, ScrollViewHeight - 5.f));
-    m_sidebarPanel->m_contentLayer->addChild(sidebarMenu);
 
     m_scrollLayer->m_contentLayer->setLayout(
         geode::ColumnLayout::create()
@@ -187,9 +192,7 @@ bool EmojiPicker::setup(CCTextInputNode* input) {
     this->addChild(layer);
 
     // Animate entry
-
     m_noElasticity = true;
-
     this->setOpacity(0);
     this->runAction(cocos2d::CCEaseExponentialOut::create(cocos2d::CCFadeTo::create(0.3f, 105)));
 
@@ -202,6 +205,81 @@ bool EmojiPicker::setup(CCTextInputNode* input) {
     layer->runAction(cocos2d::CCEaseExponentialOut::create(cocos2d::CCMoveTo::create(0.5f, targetPos2)));
 
     return true;
+}
+
+void EmojiPicker::recreateGroups() const {
+    // remove all children
+    m_scrollLayer->m_contentLayer->removeAllChildren();
+    m_sidebarPanel->m_contentLayer->removeAllChildren();
+
+    auto sidebarMenu = cocos2d::CCMenu::create();
+    sidebarMenu->setAnchorPoint({ 0, 0 });
+    sidebarMenu->setPosition({ 0, 0 });
+    sidebarMenu->ignoreAnchorPointForPosition(true);
+
+    // add dummy node to pad the top
+    auto dummy = CCNode::create();
+    dummy->setContentSize({ 27, 0 });
+    sidebarMenu->addChild(dummy);
+
+    for (auto& category : getEmojiCategories()) {
+        if (category.emojis.empty()) {
+            continue;
+        }
+
+        CCNode* first = nullptr;
+
+        if (category.name == "Frequently Used") {
+            first = cocos2d::CCSprite::createWithSpriteFrameName("GJ_timeIcon_001.png");
+        } else if (category.name == "Favorites") {
+            first = cocos2d::CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png");
+        } else {
+            first = createEmojiSprite(category.emojis.front());
+        }
+
+        if (!first) { continue; }
+        first = encloseInContainer(first, 18.f);
+
+        auto groupTop = appendGroup(category);
+        auto btn = geode::cocos::CCMenuItemExt::createSpriteExtra(
+            first, [this, groupTop](auto) {
+                m_scrollLayer->scrollTo(groupTop);
+            }
+        );
+        sidebarMenu->addChild(btn);
+    }
+
+    // add dummy node to pad the bottom
+    dummy = CCNode::create();
+    dummy->setContentSize({ ScrollViewWidth, 0 });
+    m_scrollLayer->m_contentLayer->addChild(dummy);
+
+    // calculate required height
+    float height = -ScrollGap;
+    for (auto child : geode::cocos::CCArrayExt<CCNode*>(m_scrollLayer->m_contentLayer->getChildren())) {
+        height += child->getContentSize().height + ScrollGap;
+    }
+    m_scrollLayer->m_contentLayer->setContentHeight(std::max(height, ScrollViewHeight));
+
+    height = -5.f;
+    for (auto child : geode::cocos::CCArrayExt<CCNode*>(sidebarMenu->getChildren())) {
+        height += child->getContentSize().height + 5.f;
+    }
+    sidebarMenu->setContentSize({ 27, std::max(height, ScrollViewHeight - 5.f) });
+
+    sidebarMenu->setLayout(
+        geode::ColumnLayout::create()
+            ->setAxisReverse(true)
+            ->setAutoScale(false)
+            ->setAxisAlignment(geode::AxisAlignment::End)
+            ->setCrossAxisAlignment(geode::AxisAlignment::Center)
+            ->setCrossAxisLineAlignment(geode::AxisAlignment::Center)
+            ->setCrossAxisOverflow(false)
+    );
+
+    m_sidebarPanel->setZOrder(1);
+    m_sidebarPanel->m_contentLayer->setContentHeight(std::max(height, ScrollViewHeight - 5.f));
+    m_sidebarPanel->m_contentLayer->addChild(sidebarMenu);
 }
 
 cocos2d::CCNode* EmojiPicker::createEmojiSprite(const std::string& emoji) {
@@ -261,7 +339,7 @@ cocos2d::CCNode* EmojiPicker::encloseInContainer(CCNode* node, float size) {
 
 std::vector<EmojiPicker::EmojiCategory> const& EmojiPicker::getEmojiCategories() {
     static std::vector<EmojiCategory> categories = {
-        { "Favorite", {} },
+        { "Favorites", {} },
         { "Frequently Used", {} },
         {
             "Geometry Dash",
@@ -378,7 +456,26 @@ std::vector<std::string> EmojiPicker::getFrequentlyUsedEmojis() {
 }
 
 std::vector<std::string> EmojiPicker::getFavoriteEmojis() {
-    return {};
+    return geode::Mod::get()->getSavedValue<std::vector<std::string>>("favorite-emojis", {});
+}
+
+void EmojiPicker::toggleFavoriteEmoji(std::string const& emoji) {
+    auto favorites = getFavoriteEmojis();
+    auto it = std::ranges::find(favorites, emoji);
+    bool found = it != favorites.end();
+    if (found) {
+        favorites.erase(it);
+    } else {
+        favorites.push_back(emoji);
+    }
+
+    // save changes
+    geode::Mod::get()->setSavedValue("favorite-emojis", favorites);
+
+    geode::Notification::create(
+        found ? "Removed from favorites" : "Added to favorites",
+        cocos2d::CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png")
+    )->show();
 }
 
 cocos2d::CCNode* EmojiPicker::appendGroup(EmojiCategory const& category) const {
@@ -408,8 +505,8 @@ cocos2d::CCNode* EmojiPicker::appendGroup(EmojiCategory const& category) const {
 
         sprite = encloseInContainer(sprite, 18.f);
 
-        auto item = geode::cocos::CCMenuItemExt::createSpriteExtra(
-            sprite, [this, emoji](auto) {
+        auto item = FeedbackButton::create(
+            sprite, [this, emoji] {
                 auto cursorPos = m_originalField->m_textField->m_uCursorPos;
                 std::string originalText = m_originalField->getString();
                 std::string_view sw = originalText;
@@ -426,6 +523,10 @@ cocos2d::CCNode* EmojiPicker::appendGroup(EmojiCategory const& category) const {
                 } else {
                     m_originalField->setString(originalText + emoji);
                 }
+            }, [this, emoji] {
+                toggleFavoriteEmoji(emoji);
+                this->recreateGroups();
+                this->updateScrollLayer();
             }
         );
         item->setID(emoji);

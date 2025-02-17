@@ -29,6 +29,10 @@ protected:
     static std::vector<std::string> getFrequentlyUsedEmojis();
     static std::vector<std::string> getFavoriteEmojis();
 
+    static void toggleFavoriteEmoji(std::string const& emoji);
+
+    void recreateGroups() const;
+
     CCNode* appendGroup(EmojiCategory const& category) const;
     void updateScrollLayer() const;
 
