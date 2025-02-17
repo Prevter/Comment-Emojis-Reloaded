@@ -11,6 +11,7 @@ add_library(${PROJECT_NAME} SHARED
     src/label.cpp
     src/animated-sprite.cpp
     src/emoji-picker.cpp
+    src/scroll-layer.cpp
 )
 
 if (DEFINED ENV{GITHUB_ACTIONS})
