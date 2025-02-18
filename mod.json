@@ -37,7 +37,8 @@
 				"resources/emojis/animated/shiggy/*.png",
 				"resources/emojis/animated/trolleyzoom/*.png"
 			]
-		}
+		},
+		"sprites": [ "resources/picker_icon.png" ]
 	},
 	"dependencies": {
 		"geode.node-ids": "1.19.0"

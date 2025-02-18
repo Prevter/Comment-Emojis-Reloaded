@@ -115,8 +115,13 @@ class $modify(ShareCommentLayerHook, ShareCommentLayer) {
             return false;
         }
 
-        auto btn = geode::cocos::CCMenuItemExt::createSpriteExtraWithFrameName(
-            "diffIcon_02_btn_001.png", 1.f, [this](auto) {
+        auto btnSprite = cocos2d::CCSprite::create("picker_icon.png"_spr);
+        btnSprite->setScale(0.75f);
+        btnSprite->setColor({ 0, 0, 0 });
+        btnSprite->setOpacity(105);
+
+        auto btn = geode::cocos::CCMenuItemExt::createSpriteExtra(
+            btnSprite, [this](auto) {
                 EmojiPicker::create(m_commentInput)->show();
             }
         );

@@ -532,6 +532,16 @@ cocos2d::CCNode* EmojiPicker::appendGroup(EmojiCategory const& category) const {
                 auto cursorPos = m_originalField->m_textField->m_uCursorPos;
                 std::string originalText = m_originalField->getString();
                 std::string_view sw = originalText;
+
+                // check if text limit is reached
+                if (sw.size() + emoji.size() >= 190) {
+                    return geode::Notification::create(
+                        "Text limit reached",
+                        geode::NotificationIcon::Warning
+                    )->show();
+                }
+
+                // insert emoji at cursor position
                 if (cursorPos >= 0) {
                     m_originalField->setString(fmt::format(
                         "{}{}{}",
@@ -543,8 +553,10 @@ cocos2d::CCNode* EmojiPicker::appendGroup(EmojiCategory const& category) const {
                     m_originalField->m_textField->m_uCursorPos = newCursor;
                     m_originalField->updateBlinkLabelToChar(newCursor);
                 } else {
+                    // or append to the end
                     m_originalField->setString(originalText + emoji);
                 }
+
                 incrementEmojiUsage(emoji);
             }, [this, emoji] {
                 toggleFavoriteEmoji(emoji);
