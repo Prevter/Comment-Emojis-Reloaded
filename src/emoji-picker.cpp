@@ -102,6 +102,21 @@ protected:
     bool m_cancelledTouch = false;
 };
 
+int64_t getUIScale() {
+    static int64_t val = (geode::listenForSettingChanges<int64_t>("ui-scale", [](int64_t value) {
+        val = value;
+    }), geode::Mod::get()->getSettingValue<int64_t>("ui-scale"));
+    return val;
+}
+
+float getUIScaleF() {
+    switch (getUIScale()) {
+        case 1: default: return 1.f;
+        case 2: return 1.2f;
+        case 3: return 1.548f;
+    }
+}
+
 inline cocos2d::extension::CCScale9Sprite* createBackground(float width, float height) {
     auto background = cocos2d::extension::CCScale9Sprite::create("square02_001.png");
     background->setScale(0.5f);
@@ -421,7 +436,7 @@ cocos2d::CCNode* EmojiPicker::appendGroup(EmojiCategory const& category) const {
             continue;
         }
 
-        sprite = encloseInContainer(sprite, 18.f);
+        sprite = encloseInContainer(sprite, 18.f * getUIScaleF());
 
         auto item = FeedbackButton::create(
             sprite, [this, emoji] {
