@@ -1,6 +1,7 @@
 #pragma once
 #include "label.hpp"
 #include "scroll-layer.hpp"
+#include "utils.hpp"
 
 class EmojiPicker final : public geode::Popup<CCTextInputNode*> {
 protected:
@@ -17,12 +18,7 @@ public:
 protected:
     bool setup(CCTextInputNode* input) override;
 
-    struct EmojiCategory {
-        std::string name;
-        std::vector<std::string> emojis;
-    };
-
-    static CCNode* createEmojiSprite(const std::string& emoji);
+    static CCNode* createEmojiSprite(std::string_view emoji);
     static CCNode* encloseInContainer(CCNode* node, float size);
 
     static std::vector<EmojiCategory> const& getEmojiCategories();

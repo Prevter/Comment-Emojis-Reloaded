@@ -1,4 +1,5 @@
 #pragma once
+#include "animated-sprite.hpp"
 
 inline cocos2d::ccColor3B getTextAreaColor(const TextArea* textArea) {
     auto lines = textArea->m_label->m_lines;
@@ -34,6 +35,7 @@ struct StringLiteral {
 
 template <size_t N>
 struct StringLiteralUTF32 {
+    static constexpr size_t Size = N;
     char32_t value[N]{};
     constexpr StringLiteralUTF32(const char32_t (&str)[N]) { std::copy_n(str, N, value); }
     constexpr StringLiteralUTF32(char32_t chr) { value[0] = chr; }
@@ -87,12 +89,14 @@ struct EmojiToHexConverter {
         filename[index++] = 'g';
         filename[index] = '\0';
     }
+
+    constexpr std::pair<std::u32string_view, const char*> operator()() const {
+        return { std::u32string_view(value, length), filename };
+    }
 };
 
 template <EmojiToHexConverter S>
-constexpr std::pair<std::u32string_view, const char*> operator""_emoji() {
-    return { std::u32string_view(S.value, S.length), S.filename };
-}
+constexpr std::pair<std::u32string_view, const char*> operator""_emoji() { return S(); }
 
 template <char32_t C>
 constexpr auto SingleEmoji = EmojiToHexConverter(StringLiteralUTF32<2>{C}.value);
@@ -107,12 +111,13 @@ struct Emoji {
     std::string_view name;
     std::string_view emoji;
 
+    constexpr Emoji() = default;
     constexpr Emoji(std::string_view name, std::string_view emoji) : name(name), emoji(emoji) {}
 };
 
 template <char32_t C>
 struct UTF32ToUTF8 {
-    static_assert(C >= 0x1C000 && C <= 0x1CFFF, "Custom emojis must be in the range 0x1C000-0x1CFFF");
+    // static_assert(C >= 0x1C000 && C <= 0x1CFFF, "Custom emojis must be in the range 0x1C000-0x1CFFF");
     static constexpr char32_t value = C;
     static constexpr std::array<char, 5> utf8 = {
         static_cast<char>(0xF0 | C >> 18),
@@ -121,7 +126,7 @@ struct UTF32ToUTF8 {
         static_cast<char>(0x80 | (C & 0x3F)),
         '\0'
     };
-    static constexpr std::string_view utf8_view = { utf8.data(), utf8.size() };
+    static constexpr std::string_view utf8_view = { utf8.data(), utf8.size() - 1 };
 };
 
 template <StringLiteral Name, char32_t C>
@@ -154,12 +159,171 @@ struct animoji {
     static constexpr auto emoji = CustomEmoji<Name2, C>;
     static constexpr geode::geode_internal::StringConcatModIDSlash<Name.Size> prefix = Name;
     static constexpr char32_t value = C;
+    static constexpr auto name = std::u32string_view(SingleEmoji<C>.value, SingleEmoji<C>.length);
+    static constexpr auto func = &GetFrameAnimation<prefix, FrameCount, FPS>;
 
     constexpr operator Emoji() const { return emoji; }
     operator Label::CustomNodeMap::value_type() const {
+        return { name, func };
+    }
+};
+
+template <StringLiteral Name, StringLiteral Utf8, StringLiteralUTF32 Utf32, size_t FrameCount = 0, size_t FPS = 0, bool Hidden = false>
+struct UnimojiBase {
+    static constexpr auto name = Name;
+    static constexpr auto placeholder = [] {
+        StringLiteral<Name.Size + 2> name;
+        name.value[0] = ':';
+        std::copy_n(Name.value, Name.Size, name.value + 1);
+        name.value[Name.Size] = ':';
+        name.value[Name.Size + 1] = '\0';
+        return name;
+    }();
+    static constexpr auto utf8 = Utf8;
+    static constexpr auto utf32 = Utf32;
+    static constexpr auto frames = FrameCount;
+    static constexpr auto fps = FPS;
+    static constexpr auto isHidden = Hidden;
+    static constexpr auto isAnimated = FrameCount > 0;
+
+    static constexpr auto converter = EmojiToHexConverter<Utf32.Size>{ Utf32.value };
+    static constexpr auto sprite = std::pair<std::u32string_view, const char*> { Utf32.value, converter.filename };
+    static constexpr auto emoji = Emoji{ placeholder, Utf8 };
+    static constexpr auto animatedSprite = animoji<Name, FrameCount, FPS, Utf32.value[0]>{};
+};
+
+template <StringLiteral Name, char32_t C, size_t FrameCount = 0, size_t FPS = 0, bool Hidden = false>
+struct Unimoji : UnimojiBase<Name, StringLiteral<1>{}, StringLiteralUTF32<2>{C}, FrameCount, FPS, Hidden> {
+    static constexpr auto emojiChar = C;
+    static constexpr auto emoji = CustomEmoji<Unimoji::placeholder, C>;
+    static constexpr auto sprite = Sprite<C>;
+    static constexpr auto animatedSprite = animoji<Name, FrameCount, FPS, C>{};
+};
+
+template <StringLiteral Name, char32_t C>
+using HiddenUnimoji = Unimoji<Name, C, 0, 0, true>;
+
+template <StringLiteral Name, StringLiteral Utf8, StringLiteralUTF32 Utf32, bool Hidden = false>
+using UnimojiUtf8 = UnimojiBase<Name, Utf8, Utf32, 0, 0, Hidden>;
+
+struct EmojiCategory {
+    std::string_view name;
+    std::string_view icon;
+    std::vector<std::string> emojis;
+};
+
+using EmojiMapEntry = std::pair<std::u32string_view, const char*>;
+using AnimatedEntry = std::pair<std::u32string_view, cocos2d::CCNode*(*)(std::u32string_view, uint32_t&)>;
+
+template <StringLiteral Name, StringLiteral Icon, typename... Emojis>
+struct EmojiGroup {
+    static constexpr auto GroupName = Name;
+    static constexpr auto IconName = Icon;
+    static constexpr std::tuple<Emojis...> EmojiTuple = { Emojis{}... };
+    static constexpr auto TotalSize = sizeof...(Emojis);
+    static constexpr auto Size = [] {
+        size_t size = 0;
+        (..., (size += Emojis::isHidden ? 0 : 1));
+        return size;
+    }();
+    static constexpr auto AnimatedCount = [] {
+        size_t count = 0;
+        (..., (count += Emojis::isHidden || !Emojis::isAnimated ? 0 : 1));
+        return count;
+    }();
+    static constexpr auto RegularCount = Size - AnimatedCount;
+    static constexpr auto Animated = AnimatedCount > 0;
+
+    consteval std::array<Emoji, TotalSize> getReplacements() const {
+        std::array<Emoji, TotalSize> replacements;
+        size_t index = 0;
+        ((replacements[index++] = Emojis::emoji), ...);
+        return replacements;
+    }
+
+    consteval std::array<EmojiMapEntry, Size> getRegular() const {
+        std::array<EmojiMapEntry, Size> regular;
+        size_t index = 0;
+        ((Emojis::isHidden || Emojis::isAnimated ? void() : void(regular[index++] = Emojis::sprite)), ...);
+        return regular;
+    }
+
+    consteval std::array<AnimatedEntry, AnimatedCount> getAnimated() const {
+        std::array<AnimatedEntry, AnimatedCount> animated;
+        size_t index = 0;
+        ((!Emojis::isHidden && Emojis::isAnimated ? void(animated[index++] = {
+            Emojis::animatedSprite.name,
+            Emojis::animatedSprite.func
+        }) : void()), ...);
+        return animated;
+    }
+
+    constexpr EmojiCategory getCategory() const {
+        std::vector<std::string> emojis;
+        ((Emojis::isHidden ? void() : emojis.push_back(std::string(Emojis::placeholder))), ...);
         return {
-            std::u32string_view(SingleEmoji<C>.value, SingleEmoji<C>.length),
-            GetFrameAnimation<prefix, FrameCount, FPS>
+            Name, Icon,
+            std::move(emojis)
         };
     }
 };
+
+template <size_t Index>
+constexpr size_t CountEmojisImpl(auto tuple) {
+    if constexpr (Index == std::tuple_size_v<decltype(tuple)>) {
+        return 0;
+    } else {
+        return std::get<Index>(tuple).TotalSize + CountEmojisImpl<Index + 1>(tuple);
+    }
+}
+
+template <typename T, size_t S>
+constexpr auto array_to_tuple(const std::array<T, S>& arr) {
+    return [&]<size_t... I>(std::index_sequence<I...>) {
+        return std::tuple(arr[I]...);
+    }(std::make_index_sequence<S>{});
+}
+
+template <size_t Index = 0, size_t Size = 0>
+constexpr auto CombineReplacements(auto tuple) {
+    if constexpr (Index == std::tuple_size_v<decltype(tuple)>) {
+        return std::array<Emoji, Size>{};
+    } else {
+        constexpr auto children = std::get<Index>(tuple).getReplacements();
+        auto concat = CombineReplacements<Index + 1, Size + children.size()>(tuple);
+        std::copy(children.begin(), children.end(), concat.begin() + Size);
+        return concat;
+    }
+}
+
+template <size_t Index = 0, size_t Size = 0>
+constexpr auto CombineRegulars(auto tuple) {
+    if constexpr (Index == std::tuple_size_v<decltype(tuple)>) {
+        return std::array<EmojiMapEntry, Size>{};
+    } else {
+        constexpr auto children = std::get<Index>(tuple).getRegular();
+        auto concat = CombineRegulars<Index + 1, Size + children.size()>(tuple);
+        std::copy(children.begin(), children.end(), concat.begin() + Size);
+        return concat;
+    }
+}
+
+template <size_t Index = 0, size_t Size = 0>
+constexpr auto CombineAnimated(auto tuple) {
+    if constexpr (Index == std::tuple_size_v<decltype(tuple)>) {
+        return std::array<AnimatedEntry, Size>{};
+    } else {
+        constexpr auto children = std::get<Index>(tuple).getAnimated();
+        auto concat = CombineAnimated<Index + 1, Size + children.size()>(tuple);
+        std::copy(children.begin(), children.end(), concat.begin() + Size);
+        return concat;
+    }
+}
+
+template <size_t Index = 0>
+void PopulateCategoryInfos(auto tuple, std::vector<EmojiCategory>& categories) {
+    if constexpr (Index != std::tuple_size_v<decltype(tuple)>) {
+        categories.push_back(std::move(std::get<Index>(tuple).getCategory()));
+        PopulateCategoryInfos<Index + 1>(tuple, categories);
+    }
+}

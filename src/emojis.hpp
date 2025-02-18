@@ -1,505 +1,188 @@
 #pragma once
-#include "animated-sprite.hpp"
 #include "label.hpp"
 #include "utils.hpp"
 
-namespace custom {
-    // Level difficulties
-    constexpr char32_t DiffBase = 0x1c000;
-    constexpr custom_emoji<":na:", DiffBase> DiffNA;
-    constexpr custom_emoji<":auto:", DiffBase + 1> DiffAuto;
-    constexpr custom_emoji<":easy:", DiffBase + 2> DiffEasy;
-    constexpr custom_emoji<":normal:", DiffBase + 3> DiffNormal;
-    constexpr custom_emoji<":hard:", DiffBase + 4> DiffHard;
-    constexpr custom_emoji<":harder:", DiffBase + 5> DiffHarder;
-    constexpr custom_emoji<":insane:", DiffBase + 6> DiffInsane;
-    constexpr custom_emoji<":easydemon:", DiffBase + 7> DiffEasyDemon;
-    constexpr custom_emoji<":mediumdemon:", DiffBase + 8> DiffMediumDemon;
-    constexpr custom_emoji<":harddemon:", DiffBase + 9> DiffHardDemon;
-    constexpr custom_emoji<":insanedemon:", DiffBase + 10> DiffInsaneDemon;
-    constexpr custom_emoji<":extremedemon:", DiffBase + 11> DiffExtremeDemon;
-    constexpr custom_emoji<":casual:", DiffBase + 12> DiffCasual;
-    constexpr custom_emoji<":tough:", DiffBase + 13> DiffTough;
-    constexpr custom_emoji<":cruel:", DiffBase + 14> DiffCruel;
-    constexpr custom_emoji<":creul:", DiffBase + 14> DiffCreul; // typo from original mod
+constexpr auto EmojiGroups = std::tuple<
+    EmojiGroup<
+        "Geometry Dash", ":easy:",
+        // Level difficulties
+        Unimoji<"na", 0x1c000>,          Unimoji<"auto", 0x1c001>,
+        Unimoji<"easy", 0x1c002>,        Unimoji<"normal", 0x1c003>,
+        Unimoji<"hard", 0x1c004>,        Unimoji<"harder", 0x1c005>,
+        Unimoji<"insane", 0x1c006>,      Unimoji<"easydemon", 0x1c007>,
+        Unimoji<"mediumdemon", 0x1c008>, Unimoji<"harddemon", 0x1c009>,
+        Unimoji<"insanedemon", 0x1c00a>, Unimoji<"extremedemon", 0x1c00b>,
+        Unimoji<"casual", 0x1c00c>,      Unimoji<"tough", 0x1c00d>,
+        Unimoji<"cruel", 0x1c00e>,       HiddenUnimoji<"creul", 0x1c00e>,
+        // Currency
+        Unimoji<"orb", 0x1c010>,     Unimoji<"orbs", 0x1c011>,
+        Unimoji<"diamond", 0x1c012>, Unimoji<"diamonds", 0x1c013>,
+        // Locks
+        Unimoji<"locked", 0x1c01a>,  Unimoji<"lockedgray", 0x1c01b>,
+        Unimoji<"unlocked", 0x1c01c>,
+        // Coins
+        Unimoji<"goldcoin", 0x1c020>,           Unimoji<"uncollectedusercoin", 0x1c021>,
+        Unimoji<"usercoinunverified", 0x1c022>, Unimoji<"usercoin", 0x1c023>,
+        Unimoji<"points", 0x1c024>,
+        // Mod badges
+        Unimoji<"mod", 0x1c02a>, Unimoji<"eldermod", 0x1c02b>,
+        Unimoji<"leaderboardmod", 0x1c02c>,
+        // Misc
+        UnimojiUtf8<"star", "⭐", U"⭐">,  UnimojiUtf8<"moon", "🌙", U"🌙">,
+        UnimojiUtf8<"check", "✔️", U"✔️">, UnimojiUtf8<"cross", "❌", U"❌">,
+        UnimojiUtf8<"like", "👍", U"👍">,  UnimojiUtf8<"dislike", "👎", U"👎">
+    >,
+    EmojiGroup<
+        "Twemoji", ":sunglasses:",
+        // People
+        UnimojiUtf8<"heart_eyes", "😍", U"😍">,            UnimojiUtf8<"face_with_raised_eyebrow", "🤨", U"🤨">,
+        UnimojiUtf8<"nerd", "🤓", U"🤓">,                  UnimojiUtf8<"sunglasses", "😎", U"😎">,
+        UnimojiUtf8<"sob", "😭", U"😭">,                   UnimojiUtf8<"exploding_head", "🤯", U"🤯">,
+        UnimojiUtf8<"scream", "😱", U"😱">,                UnimojiUtf8<"shushing_face", "🤫", U"🤫">,
+        UnimojiUtf8<"smiling_imp", "😈", U"😈">,           UnimojiUtf8<"clown", "🤡", U"🤡">,
+        UnimojiUtf8<"ghost", "👻", U"👻">,                 UnimojiUtf8<"skull", "💀", U"💀">,
+        UnimojiUtf8<"alien", "👽", U"👽">,                 UnimojiUtf8<"robot", "🤖", U"🤖">,
+        UnimojiUtf8<"middle_finger", "🖕", U"🖕">,         UnimojiUtf8<"pray", "🙏", U"🙏">,
+        UnimojiUtf8<"tongue", "👅", U"👅">,                UnimojiUtf8<"speaking_head", "🗣️", U"🗣️">,
+        UnimojiUtf8<"baby", "👶", U"👶">,                  UnimojiUtf8<"deaf_person", "🧏", U"🧏">,
+        UnimojiUtf8<"deaf_woman", "🧏‍♀️", U"🧏‍♀️">,            UnimojiUtf8<"deaf_man", "🧏‍♂️", U"🧏‍♂️">,
+        UnimojiUtf8<"person_in_steamy_room", "🧖", U"🧖">, UnimojiUtf8<"crown", "👑", U"👑">,
+        // Nature
+        UnimojiUtf8<"dog", "🐶", U"🐶">,                UnimojiUtf8<"cat", "🐱", U"🐱">,
+        UnimojiUtf8<"fox", "🦊", U"🦊">,                UnimojiUtf8<"bear", "🐻", U"🐻">,
+        UnimojiUtf8<"pig", "🐷", U"🐷">,                UnimojiUtf8<"monkey_face", "🐵", U"🐵">,
+        UnimojiUtf8<"see_no_evil", "🙈", U"🙈">,        UnimojiUtf8<"hear_no_evil", "🙉", U"🙉">,
+        UnimojiUtf8<"speak_no_evil", "🙊", U"🙊">,      UnimojiUtf8<"fish", "🐟", U"🐟">,
+        UnimojiUtf8<"sun_with_face", "🌞", U"🌞">,      UnimojiUtf8<"full_moon_with_face", "🌝", U"🌝">,
+        UnimojiUtf8<"new_moon_with_face", "🌚", U"🌚">, UnimojiUtf8<"last_quarter_moon", "🌗", U"🌗">,
+        UnimojiUtf8<"new_moon", "🌑", U"🌑">,           UnimojiUtf8<"sparkles", "✨", U"✨">,
+        UnimojiUtf8<"fire", "🔥", U"🔥">,               UnimojiUtf8<"snowflake", "❄️", U"❄️">,
+        // Food
+        UnimojiUtf8<"eggplant", "🍆", U"🍆">,
+        // Travel
+        UnimojiUtf8<"moyai", "🗿", U"🗿">,
+        // Objects
+        UnimojiUtf8<"gun", "🔫", U"🔫">,
+        UnimojiUtf8<"sleeping_accommodation", "🛌", U"🛌">,
+        UnimojiUtf8<"party_popper", "🎉", U"🎉">,
+        // Symbols
+        UnimojiUtf8<"heart", "❤️", U"❤️">,       UnimojiUtf8<"broken_heart", "💔", U"💔">,
+        UnimojiUtf8<"radioactive", "☢️", U"☢️">, UnimojiUtf8<"100", "💯", U"💯">,
+        UnimojiUtf8<"question", "❓", U"❓">,    UnimojiUtf8<"bangbang", "‼️", U"‼️">,
+        UnimojiUtf8<"zero", "0️⃣", U"0️⃣">,        UnimojiUtf8<"one", "1️⃣", U"1️⃣">,
+        UnimojiUtf8<"two", "2️⃣", U"2️⃣">,         UnimojiUtf8<"three", "3️⃣", U"3️⃣">,
+        UnimojiUtf8<"four", "4️⃣", U"4️⃣">,        UnimojiUtf8<"five", "5️⃣", U"5️⃣">,
+        UnimojiUtf8<"six", "6️⃣", U"6️⃣">,         UnimojiUtf8<"seven", "7️⃣", U"7️⃣">,
+        UnimojiUtf8<"eight", "8️⃣", U"8️⃣">,       UnimojiUtf8<"nine", "9️⃣", U"9️⃣">,
+        // Alternative names
+        UnimojiUtf8<"shocked_face", "😱", U"😱", true>,
+        UnimojiUtf8<"folded_hands", "🙏", U"🙏", true>,
+        UnimojiUtf8<"tada", "🎉", U"🎉", true>
+    >,
+    EmojiGroup<
+        "Legacy Set", ":ned:",
+        Unimoji<"amongus", 0x1c030>,         Unimoji<"amogus", 0x1c031>,
+        Unimoji<"bruh", 0x1c032>,            Unimoji<"carlos", 0x1c033>,
+        Unimoji<"clueless", 0x1c034>,        Unimoji<"despair", 0x1c035>,
+        Unimoji<"despair2", 0x1c036>,        Unimoji<"ned", 0x1c037>,
+        Unimoji<"pusab?", 0x1c038>,          Unimoji<"robsmile", 0x1c039>,
+        Unimoji<"sip", 0x1c03a>,             Unimoji<"splat", 0x1c03b>,
+        Unimoji<"teehee", 0x1c03c>,          Unimoji<"trollface", 0x1c03d>,
+        Unimoji<"true", 0x1c03e>,            Unimoji<"walter", 0x1c03f>,
+        Unimoji<"wha", 0x1c040>,             Unimoji<"whadahell", 0x1c041>,
+        Unimoji<"youshould", 0x1c042>,       Unimoji<"car", 0x1c043>,
+        Unimoji<"zoink", 0x1c044>,           Unimoji<"shocked", 0x1c045>,
+        Unimoji<"poppinbottles", 0x1c046>,   Unimoji<"party", 0x1c047>,
+        Unimoji<"potbor", 0x1c048>,          Unimoji<"dabmeup", 0x1c049>,
+        Unimoji<"fireinthehole", 0x1c04a>,   Unimoji<"finger", 0x1c04b>,
+        Unimoji<"soggy", 0x1c04c>,           Unimoji<"mayo", 0x1c04d>,
+        Unimoji<"divine", 0x1c04e>,          Unimoji<"bueno", 0x1c04f>,
+        Unimoji<"rattledash", 0x1c050>,      Unimoji<"gd", 0x1c051>,
+        Unimoji<"geode", 0x1c052>,           Unimoji<"boar", 0x1c053>,
+        Unimoji<"mewhen", 0x1c054>,          Unimoji<"changetopic", 0x1c055>,
+        Unimoji<"touchgrass", 0x1c056>,      Unimoji<"gggggggg", 0x1c057>,
+        Unimoji<"gdok", 0x1c058>,            Unimoji<"hug", 0x1c059>,
+        Unimoji<"angy", 0x1c05a>,            Unimoji<"lewd", 0x1c05b>,
+        Unimoji<"headpat", 0x1c05c>,         Unimoji<"transcat", 0x1c05d>,
+        Unimoji<"transcat2", 0x1c05e>,       Unimoji<"skillissue", 0x1c05f>,
+        Unimoji<"yes", 0x1c060>,             Unimoji<"gunleft", 0x1c061>,
+        Unimoji<"gunright", 0x1c062>,        Unimoji<"edge", 0x1c063>,
+        Unimoji<"cologne", 0x1c064>,         Unimoji<"globed", 0x1c065>,
+        Unimoji<"levelthumbnails", 0x1c066>, Unimoji<"oh", 0x1c067>,
+        Unimoji<"holymoly", 0x1c068>,        Unimoji<"1000yardstare", 0x1c069>,
+        Unimoji<"spunchbob", 0x1c06a>,       Unimoji<"freakbob", 0x1c06b>,
+        Unimoji<"nuhuh", 0x1c06c>,           Unimoji<"yuhuh", 0x1c06d>,
+        // Animated
+        Unimoji<"shiggy", 0x1c600, 10, 50>,        Unimoji<"hype", 0x1c601, 10, 14>,
+        Unimoji<"petmaurice", 0x1c602, 5, 20>,     Unimoji<"bonk", 0x1c603, 17, 16>,
+        Unimoji<"partying", 0x1c604, 12, 25>,      Unimoji<"ned_explosion", 0x1c605, 12, 50>,
+        Unimoji<"polarbear", 0x1c606, 13, 33>,     Unimoji<"colonthreecat", 0x1c607, 111, 33>,
+        Unimoji<"deltaruneexplosion", 0x1c60b, 17, 17>
+    >,
+    EmojiGroup<
+        "Custom Emojis", ":eyesShock:",
+        Unimoji<"eyesShock", 0x1c100>,     Unimoji<"trollskull", 0x1c101>,
+        Unimoji<"slight_smile2", 0x1c102>,
+        // Animated
+        Unimoji<"trolleyzoom", 0x1c60c, 178, 25>
+    >,
+    EmojiGroup<
+        "Cube Emotes (By @cyanflower)", ":cubehappy:",
+        Unimoji<"cubeballin", 0x1c071>,  Unimoji<"cubeconfused", 0x1c072>,
+        Unimoji<"cubecool", 0x1c073>,    Unimoji<"cubehappy", 0x1c074>,
+        Unimoji<"cubeletsgo", 0x1c075>,  Unimoji<"cubepog", 0x1c076>,
+        Unimoji<"cubescared", 0x1c077>,  Unimoji<"cubestare", 0x1c078>,
+        Unimoji<"cubethink", 0x1c079>,   Unimoji<"cubeview", 0x1c07a>,
+        Unimoji<"cubewink", 0x1c07b>,    Unimoji<"defaultangry", 0x1c07c>,
+        Unimoji<"eeyikes", 0x1c07d>,     Unimoji<"fumocube", 0x1c07e>,
+        Unimoji<"robtoppixel", 0x1c07f>, Unimoji<"boshytime", 0x1c070>,
+        Unimoji<"smugzero", 0x1c07f>,
+        // Animated
+        Unimoji<"cubedance", 0x1c608, 6, 14>,      Unimoji<"cubespeen", 0x1c609, 12, 25>,
+        Unimoji<"cubehyperthink", 0x1c60a, 6, 20>
+    >,
+    EmojiGroup<
+        "Cat Emotes (C# Discord Server)", ":catgun:",
+        Unimoji<"catbless", 0x1c090>,      Unimoji<"catcash", 0x1c091>,
+        Unimoji<"catcomf", 0x1c092>,       Unimoji<"catcool", 0x1c093>,
+        Unimoji<"catcop", 0x1c094>,        Unimoji<"catcorn", 0x1c095>,
+        Unimoji<"catderp", 0x1c096>,       Unimoji<"catfacepalm", 0x1c097>,
+        Unimoji<"catfine", 0x1c098>,       Unimoji<"catgasm", 0x1c099>,
+        Unimoji<"catgasp", 0x1c09a>,       Unimoji<"catgift", 0x1c09b>,
+        Unimoji<"catgrump", 0x1c09c>,      Unimoji<"catgun", 0x1c09d>,
+        Unimoji<"cathammer", 0x1c09e>,     Unimoji<"cathi", 0x1c09f>,
+        Unimoji<"cathype", 0x1c0a0>,       Unimoji<"catlaugh", 0x1c0a1>,
+        Unimoji<"catlick", 0x1c0a2>,       Unimoji<"catloser", 0x1c0a3>,
+        Unimoji<"catlost", 0x1c0a4>,       Unimoji<"catlove", 0x1c0a5>,
+        Unimoji<"catlul", 0x1c0a6>,        Unimoji<"catlurk", 0x1c0a7>,
+        Unimoji<"catmusik", 0x1c0a8>,      Unimoji<"catok", 0x1c0a9>,
+        Unimoji<"catpat", 0x1c0aa>,        Unimoji<"catpls", 0x1c0ab>,
+        Unimoji<"catpog", 0x1c0ac>,        Unimoji<"catpout", 0x1c0ad>,
+        Unimoji<"catree", 0x1c0ae>,        Unimoji<"catshrug", 0x1c0af>,
+        Unimoji<"catshy", 0x1c0b0>,        Unimoji<"catsimp", 0x1c0b1>,
+        Unimoji<"catsip", 0x1c0b2>,        Unimoji<"catsleep", 0x1c0b3>,
+        Unimoji<"catsmart", 0x1c0b4>,      Unimoji<"catsweat", 0x1c0b5>,
+        Unimoji<"catthinking", 0x1c0b6>
+    >,
+    EmojiGroup<
+        "Player Icons", ":default:",
+        Unimoji<"default", 0x1c0c0>,       Unimoji<"sdslayer", 0x1c0c1>,
+        Unimoji<"evw", 0x1c0c2>,           Unimoji<"tride", 0x1c0c3>,
+        Unimoji<"colon", 0x1c0c4>,         Unimoji<"robtop", 0x1c0c5>,
+        Unimoji<"wulzy", 0x1c0c6>,         Unimoji<"juniper", 0x1c0c7>,
+        Unimoji<"riot", 0x1c0c8>,          Unimoji<"cyclic", 0x1c0c9>,
+        Unimoji<"thesillydoggo", 0x1c0ca>, Unimoji<"uproxide", 0x1c0cb>
+    >
+>{};
 
-    // Currency
-    constexpr char32_t CurrencyBase = 0x1c010;
-    constexpr custom_emoji<":orb:", CurrencyBase> Orb;
-    constexpr custom_emoji<":orbs:", CurrencyBase + 1> Orbs;
-    constexpr custom_emoji<":diamond:", CurrencyBase + 2> Diamond;
-    constexpr custom_emoji<":diamonds:", CurrencyBase + 3> Diamonds;
+constexpr auto EmojiReplacements = CombineReplacements(EmojiGroups);
 
-    // Locks
-    constexpr char32_t LockBase = 0x1c01a;
-    constexpr custom_emoji<":locked:", LockBase> Locked;
-    constexpr custom_emoji<":lockedgray:", LockBase + 1> LockedGray;
-    constexpr custom_emoji<":unlocked:", LockBase + 2> Unlocked;
+inline static Label::EmojiMap EmojiSheet = []() {
+    constexpr auto combined = CombineRegulars(EmojiGroups);
+    return Label::EmojiMap(combined.begin(), combined.end());
+}();
 
-    // Coins
-    constexpr char32_t CoinBase = 0x1c020;
-    constexpr custom_emoji<":goldcoin:", CoinBase> GoldCoin;
-    constexpr custom_emoji<":uncollectedusercoin:", CoinBase + 1> UncollectedUserCoin;
-    constexpr custom_emoji<":usercoinunverified:", CoinBase + 2> UserCoinUnverified;
-    constexpr custom_emoji<":usercoin:", CoinBase + 3> UserCoin;
-    constexpr custom_emoji<":points:", CoinBase + 4> Points;
-
-    // Mod badges
-    constexpr char32_t ModBase = 0x1c02a;
-    constexpr custom_emoji<":mod:", ModBase> Mod;
-    constexpr custom_emoji<":eldermod:", ModBase + 1> ElderMod;
-    constexpr custom_emoji<":leaderboardmod:", ModBase + 2> LeaderboardMod;
-
-    // Legacy set
-    constexpr char32_t LegacyBase = 0x1c030;
-    constexpr custom_emoji<":amongus:", LegacyBase> AmongUs;
-    constexpr custom_emoji<":amogus:", LegacyBase + 1> Amogus;
-    constexpr custom_emoji<":bruh:", LegacyBase + 2> Bruh;
-    constexpr custom_emoji<":carlos:", LegacyBase + 3> Carlos;
-    constexpr custom_emoji<":clueless:", LegacyBase + 4> Clueless;
-    constexpr custom_emoji<":despair:", LegacyBase + 5> Despair;
-    constexpr custom_emoji<":despair2:", LegacyBase + 6> Despair2;
-    constexpr custom_emoji<":ned:", LegacyBase + 7> Ned;
-    constexpr custom_emoji<":pusab?:", LegacyBase + 8> Pusab;
-    constexpr custom_emoji<":robsmile:", LegacyBase + 9> RobSmile;
-    constexpr custom_emoji<":sip:", LegacyBase + 10> Sip;
-    constexpr custom_emoji<":splat:", LegacyBase + 11> Splat;
-    constexpr custom_emoji<":teehee:", LegacyBase + 12> Teehee;
-    constexpr custom_emoji<":trollface:", LegacyBase + 13> Trollface;
-    constexpr custom_emoji<":true:", LegacyBase + 14> True;
-    constexpr custom_emoji<":walter:", LegacyBase + 15> Walter;
-    constexpr custom_emoji<":wha:", LegacyBase + 16> Wha;
-    constexpr custom_emoji<":whadahell:", LegacyBase + 17> Whadahell;
-    constexpr custom_emoji<":youshould:", LegacyBase + 18> YouShould;
-    constexpr custom_emoji<":car:", LegacyBase + 19> Car;
-    constexpr custom_emoji<":zoink:", LegacyBase + 20> Zoink;
-    constexpr custom_emoji<":shocked:", LegacyBase + 21> Shocked;
-    constexpr custom_emoji<":poppinbottles:", LegacyBase + 22> PoppinBottles;
-    constexpr custom_emoji<":party:", LegacyBase + 23> Party;
-    constexpr custom_emoji<":potbor:", LegacyBase + 24> Potbor;
-    constexpr custom_emoji<":dabmeup:", LegacyBase + 25> DabMeUp;
-    constexpr custom_emoji<":fireinthehole:", LegacyBase + 26> FireInTheHole;
-    constexpr custom_emoji<":finger:", LegacyBase + 27> Finger;
-    constexpr custom_emoji<":soggy:", LegacyBase + 28> Soggy;
-    constexpr custom_emoji<":mayo:", LegacyBase + 29> Mayo;
-    constexpr custom_emoji<":divine:", LegacyBase + 30> Divine;
-    constexpr custom_emoji<":bueno:", LegacyBase + 31> Bueno;
-    constexpr custom_emoji<":rattledash:", LegacyBase + 32> RattleDash;
-    constexpr custom_emoji<":gd:", LegacyBase + 33> GD;
-    constexpr custom_emoji<":geode:", LegacyBase + 34> Geode;
-    constexpr custom_emoji<":boar:", LegacyBase + 35> Boar;
-    constexpr custom_emoji<":mewhen:", LegacyBase + 36> MeWhen;
-    constexpr custom_emoji<":changetopic:", LegacyBase + 37> ChangeTopic;
-    constexpr custom_emoji<":touchgrass:", LegacyBase + 38> TouchGrass;
-    constexpr custom_emoji<":gggggggg:", LegacyBase + 39> GGGGGGGG;
-    constexpr custom_emoji<":gdok:", LegacyBase + 40> GDOK;
-    constexpr custom_emoji<":hug:", LegacyBase + 41> Hug;
-    constexpr custom_emoji<":angy:", LegacyBase + 42> Angy;
-    constexpr custom_emoji<":lewd:", LegacyBase + 43> Lewd;
-    constexpr custom_emoji<":headpat:", LegacyBase + 44> Headpat;
-    constexpr custom_emoji<":transcat:", LegacyBase + 45> Transcat;
-    constexpr custom_emoji<":transcat2:", LegacyBase + 46> Transcat2;
-    constexpr custom_emoji<":skillissue:", LegacyBase + 47> SkillIssue;
-    constexpr custom_emoji<":yes:", LegacyBase + 48> Yes;
-    constexpr custom_emoji<":gunleft:", LegacyBase + 49> GunLeft;
-    constexpr custom_emoji<":gunright:", LegacyBase + 50> GunRight;
-    constexpr custom_emoji<":edge:", LegacyBase + 51> Edge;
-    constexpr custom_emoji<":cologne:", LegacyBase + 52> Cologne;
-    constexpr custom_emoji<":globed:", LegacyBase + 53> Globed;
-    constexpr custom_emoji<":levelthumbnails:", LegacyBase + 54> LevelThumbnails;
-    constexpr custom_emoji<":oh:", LegacyBase + 55> Oh;
-    constexpr custom_emoji<":holymoly:", LegacyBase + 56> HolyMoly;
-    constexpr custom_emoji<":1000yardstare:", LegacyBase + 57> ThousandYardStare;
-    constexpr custom_emoji<":spunchbob:", LegacyBase + 58> SpunchBob;
-    constexpr custom_emoji<":freakbob:", LegacyBase + 59> FreakBob;
-    constexpr custom_emoji<":nuhuh:", LegacyBase + 60> Nuhuh;
-    constexpr custom_emoji<":yuhuh:", LegacyBase + 61> Yuhuh;
-
-    // Cube Emotes (By @cyanflower)
-    constexpr char32_t CubeBase = 0x1c070;
-    constexpr custom_emoji<":boshytime:", CubeBase> BoshyTime;
-    constexpr custom_emoji<":cubeballin:", CubeBase + 1> CubeBallin;
-    constexpr custom_emoji<":cubeconfused:", CubeBase + 2> CubeConfused;
-    constexpr custom_emoji<":cubecool:", CubeBase + 3> CubeCool;
-    constexpr custom_emoji<":cubehappy:", CubeBase + 4> CubeHappy;
-    constexpr custom_emoji<":cubeletsgo:", CubeBase + 5> CubeLetsGo;
-    constexpr custom_emoji<":cubepog:", CubeBase + 6> CubePog;
-    constexpr custom_emoji<":cubescared:", CubeBase + 7> CubeScared;
-    constexpr custom_emoji<":cubestare:", CubeBase + 8> CubeStare;
-    constexpr custom_emoji<":cubethink:", CubeBase + 9> CubeThink;
-    constexpr custom_emoji<":cubeview:", CubeBase + 10> CubeView;
-    constexpr custom_emoji<":cubewink:", CubeBase + 11> CubeWink;
-    constexpr custom_emoji<":defaultangry:", CubeBase + 12> DefaultAngry;
-    constexpr custom_emoji<":eeyikes:", CubeBase + 13> EeYikes;
-    constexpr custom_emoji<":fumocube:", CubeBase + 14> FumoCube;
-    constexpr custom_emoji<":robtoppixel:", CubeBase + 15> RobTopPixel;
-    constexpr custom_emoji<":smugzero:", CubeBase + 16> SmugZero;
-
-    // Cat Emotes (C# Discord Server)
-    constexpr char32_t CatBase = 0x1c090;
-    constexpr custom_emoji<":catbless:", CatBase> CatBless;
-    constexpr custom_emoji<":catcash:", CatBase + 1> CatCash;
-    constexpr custom_emoji<":catcomf:", CatBase + 2> CatComf;
-    constexpr custom_emoji<":catcool:", CatBase + 3> CatCool;
-    constexpr custom_emoji<":catcop:", CatBase + 4> CatCop;
-    constexpr custom_emoji<":catcorn:", CatBase + 5> CatCorn;
-    constexpr custom_emoji<":catderp:", CatBase + 6> CatDerp;
-    constexpr custom_emoji<":catfacepalm:", CatBase + 7> CatFacepalm;
-    constexpr custom_emoji<":catfine:", CatBase + 8> CatFine;
-    constexpr custom_emoji<":catgasm:", CatBase + 9> CatGasm;
-    constexpr custom_emoji<":catgasp:", CatBase + 10> CatGasp;
-    constexpr custom_emoji<":catgift:", CatBase + 11> CatGift;
-    constexpr custom_emoji<":catgrump:", CatBase + 12> CatGrump;
-    constexpr custom_emoji<":catgun:", CatBase + 13> CatGun;
-    constexpr custom_emoji<":cathammer:", CatBase + 14> CatHammer;
-    constexpr custom_emoji<":cathi:", CatBase + 15> CatHi;
-    constexpr custom_emoji<":cathype:", CatBase + 16> CatHype;
-    constexpr custom_emoji<":catlaugh:", CatBase + 17> CatLaugh;
-    constexpr custom_emoji<":catlick:", CatBase + 18> CatLick;
-    constexpr custom_emoji<":catloser:", CatBase + 19> CatLoser;
-    constexpr custom_emoji<":catlost:", CatBase + 20> CatLost;
-    constexpr custom_emoji<":catlove:", CatBase + 21> CatLove;
-    constexpr custom_emoji<":catlul:", CatBase + 22> CatLul;
-    constexpr custom_emoji<":catlurk:", CatBase + 23> CatLurk;
-    constexpr custom_emoji<":catmusik:", CatBase + 24> CatMusik;
-    constexpr custom_emoji<":catok:", CatBase + 25> CatOK;
-    constexpr custom_emoji<":catpat:", CatBase + 26> CatPat;
-    constexpr custom_emoji<":catpls:", CatBase + 27> CatPls;
-    constexpr custom_emoji<":catpog:", CatBase + 28> CatPog;
-    constexpr custom_emoji<":catpout:", CatBase + 29> CatPout;
-    constexpr custom_emoji<":catree:", CatBase + 30> CatRee;
-    constexpr custom_emoji<":catshrug:", CatBase + 31> CatShrug;
-    constexpr custom_emoji<":catshy:", CatBase + 32> CatShy;
-    constexpr custom_emoji<":catsimp:", CatBase + 33> CatSimp;
-    constexpr custom_emoji<":catsip:", CatBase + 34> CatSip;
-    constexpr custom_emoji<":catsleep:", CatBase + 35> CatSleep;
-    constexpr custom_emoji<":catsmart:", CatBase + 36> CatSmart;
-    constexpr custom_emoji<":catsweat:", CatBase + 37> CatSweat;
-    constexpr custom_emoji<":catthinking:", CatBase + 38> CatThinking;
-
-    // Player Icons
-    constexpr char32_t PlayersBase = 0x1c0c0;
-    constexpr custom_emoji<":default:", PlayersBase> PlayerDefault;
-    constexpr custom_emoji<":sdslayer:", PlayersBase + 1> PlayerSdslayer;
-    constexpr custom_emoji<":evw:", PlayersBase + 2> PlayerEVW;
-    constexpr custom_emoji<":tride:", PlayersBase + 3> PlayerTride;
-    constexpr custom_emoji<":colon:", PlayersBase + 4> PlayerColon;
-    constexpr custom_emoji<":robtop:", PlayersBase + 5> PlayerRobTop;
-    constexpr custom_emoji<":wulzy:", PlayersBase + 6> PlayerWulzy;
-    constexpr custom_emoji<":juniper:", PlayersBase + 7> PlayerJuniper;
-    constexpr custom_emoji<":riot:", PlayersBase + 8> PlayerRiot;
-    constexpr custom_emoji<":cyclic:", PlayersBase + 9> PlayerCyclic;
-    constexpr custom_emoji<":thesillydoggo:", PlayersBase + 10> PlayerTheSillyDoggo;
-    constexpr custom_emoji<":uproxide:", PlayersBase + 11> PlayerUproxide;
-
-    // Custom Emojis
-    constexpr char32_t CustomBase = 0x1c100;
-    constexpr custom_emoji<":eyesShock:", CustomBase> EyesShock;
-    constexpr custom_emoji<":trollskull:", CustomBase + 1> TrollSkull;
-    constexpr custom_emoji<":slight_smile:", CustomBase + 2> SlightSmile;
-
-    // Legacy Animated Emojis
-    constexpr char32_t AnimatedBase = 0x1c600;
-    constexpr animoji<"shiggy", 10, 50, AnimatedBase> Shiggy;
-    constexpr animoji<"hype", 10, 14, AnimatedBase + 1> Hype;
-    constexpr animoji<"petmaurice", 5, 20, AnimatedBase + 2> PetMaurice;
-    constexpr animoji<"bonk", 17, 16, AnimatedBase + 3> Bonk;
-    constexpr animoji<"partying", 12, 25, AnimatedBase + 4> Partying;
-    constexpr animoji<"ned_explosion", 12, 50, AnimatedBase + 5> NedExplosion;
-    constexpr animoji<"polarbear", 13, 33, AnimatedBase + 6> PolarBear;
-    constexpr animoji<"colonthreecat", 111, 33, AnimatedBase + 7> ColonThreeCat;
-    constexpr animoji<"cubedance", 6, 14, AnimatedBase + 8> CubeDance;
-    constexpr animoji<"cubespeen", 12, 25, AnimatedBase + 9> CubeSpeen;
-    constexpr animoji<"cubehyperthink", 6, 20, AnimatedBase + 10> CubeHyperThink;
-    constexpr animoji<"deltaruneexplosion", 17, 17, AnimatedBase + 11> DeltaruneExplosion;
-
-    // Animated Emojis
-    constexpr animoji<"trolleyzoom", 178, 25, AnimatedBase + 12> TrolleyZoom;
-}
-
-inline static std::initializer_list<Emoji> EmojiReplacements = {
-    // Level difficulties
-    custom::DiffNA, custom::DiffAuto, custom::DiffEasy,
-    custom::DiffNormal, custom::DiffHard, custom::DiffHarder,
-    custom::DiffInsane, custom::DiffEasyDemon, custom::DiffMediumDemon,
-    custom::DiffHardDemon, custom::DiffInsaneDemon, custom::DiffExtremeDemon,
-    custom::DiffCasual, custom::DiffTough, custom::DiffCruel, custom::DiffCreul,
-
-    // Currency
-    custom::Orb, custom::Orbs, custom::Diamond, custom::Diamonds,
-
-    // Locks
-    custom::Locked, custom::LockedGray, custom::Unlocked,
-
-    // Coins
-    custom::GoldCoin, custom::UncollectedUserCoin, custom::UserCoinUnverified,
-    custom::UserCoin, custom::Points,
-
-    // Mod badges
-    custom::Mod, custom::ElderMod, custom::LeaderboardMod,
-
-    // Legacy set
-    custom::AmongUs, custom::Amogus, custom::Bruh, custom::Carlos,
-    custom::Clueless, custom::Despair, custom::Despair2, custom::Ned,
-    custom::Pusab, custom::RobSmile, custom::Sip, custom::Splat,
-    custom::Teehee, custom::Trollface, custom::True, custom::Walter,
-    custom::Wha, custom::Whadahell, custom::YouShould, custom::Car,
-    custom::Zoink, custom::Shocked, custom::PoppinBottles, custom::Party,
-    custom::Potbor, custom::DabMeUp, custom::FireInTheHole, custom::Finger,
-    custom::Soggy, custom::Mayo, custom::Divine, custom::Bueno,
-    custom::RattleDash, custom::GD, custom::Geode, custom::Boar,
-    custom::MeWhen, custom::ChangeTopic, custom::TouchGrass, custom::GGGGGGGG,
-    custom::GDOK, custom::Hug, custom::Angy, custom::Lewd,
-    custom::Headpat, custom::Transcat, custom::Transcat2, custom::SkillIssue,
-    custom::Yes, custom::GunLeft, custom::GunRight, custom::Edge,
-    custom::Cologne, custom::Globed, custom::LevelThumbnails, custom::Oh,
-    custom::HolyMoly, custom::ThousandYardStare, custom::SpunchBob,
-    custom::FreakBob, custom::Nuhuh, custom::Yuhuh,
-
-    // Cube Emotes
-    custom::BoshyTime, custom::CubeBallin, custom::CubeConfused,
-    custom::CubeCool, custom::CubeHappy, custom::CubeLetsGo,
-    custom::CubePog, custom::CubeScared, custom::CubeStare,
-    custom::CubeThink, custom::CubeView, custom::CubeWink,
-    custom::DefaultAngry, custom::EeYikes, custom::FumoCube,
-    custom::RobTopPixel, custom::SmugZero,
-
-    // Cat Emotes
-    custom::CatBless, custom::CatCash, custom::CatComf,
-    custom::CatCool, custom::CatCop, custom::CatCorn,
-    custom::CatDerp, custom::CatFacepalm, custom::CatFine,
-    custom::CatGasm, custom::CatGasp, custom::CatGift,
-    custom::CatGrump, custom::CatGun, custom::CatHammer,
-    custom::CatHi, custom::CatHype, custom::CatLaugh,
-    custom::CatLick, custom::CatLoser, custom::CatLost,
-    custom::CatLove, custom::CatLul, custom::CatLurk,
-    custom::CatMusik, custom::CatOK, custom::CatPat,
-    custom::CatPls, custom::CatPog, custom::CatPout,
-    custom::CatRee, custom::CatShrug, custom::CatShy,
-    custom::CatSimp, custom::CatSip, custom::CatSleep,
-    custom::CatSmart, custom::CatSweat, custom::CatThinking,
-
-    // Player Icons
-    custom::PlayerDefault, custom::PlayerSdslayer, custom::PlayerEVW,
-    custom::PlayerTride, custom::PlayerColon, custom::PlayerRobTop,
-    custom::PlayerWulzy, custom::PlayerJuniper, custom::PlayerRiot,
-    custom::PlayerCyclic, custom::PlayerTheSillyDoggo, custom::PlayerUproxide,
-
-    // Custom Emojis
-    custom::EyesShock, custom::TrollSkull, custom::SlightSmile,
-
-    // Geometry Dash icons
-    Emoji{":star:", "⭐"}, Emoji{":moon:", "🌙"},
-    Emoji{":check:", "✔️"}, Emoji{":cross:", "❌"},
-    Emoji{":like:", "👍"}, Emoji{":dislike:", "👎"},
-
-    // twemoji pack (Emojis in Comments)
-    Emoji{":100:", "💯"},
-    Emoji{":shushing_face:", "🤫"},
-    Emoji{":deaf_person:", "🧏"},
-    Emoji{":deaf_man:", "🧏‍♂️"},
-    Emoji{":deaf_woman:", "🧏‍♀️"},
-    Emoji{":bear:", "🐻"},
-    Emoji{":broken_heart:", "💔"},
-    Emoji{":cat:", "🐱"},
-    Emoji{":dog:", "🐶"},
-    Emoji{":fox:", "🦊"},
-    Emoji{":gun:", "🔫"},
-    Emoji{":face_with_raised_eyebrow:", "🤨"},
-    Emoji{":middle_finger:", "🖕"},
-    Emoji{":moyai:", "🗿"},
-    Emoji{":fire:", "🔥"},
-    Emoji{":nerd:", "🤓"},
-    Emoji{":radioactive:", "☢️"},
-    Emoji{":scream:", "😱"},
-    Emoji{":skull:", "💀"},
-    Emoji{":smiling_imp:", "😈"},
-    Emoji{":speaking_head:", "🗣️"},
-    Emoji{":sob:", "😭"},
-    Emoji{":eggplant:", "🍆"},
-    Emoji{":clown:", "🤡"},
-    Emoji{":tongue:", "👅"},
-
-    // twemoji pack (Extended)
-    Emoji{":alien:", "👽"},
-    Emoji{":baby:", "👶"},
-    Emoji{":robot:", "🤖"},
-    Emoji{":heart:", "❤️"},
-    Emoji{":ghost:", "👻"},
-    Emoji{":exploding_head:", "🤯"},
-    Emoji{":snowflake:", "❄️"},
-    Emoji{":sleeping_accommodation:", "🛌"},
-    Emoji{":person_in_steamy_room:", "🧖"},
-    Emoji{":fish:", "🐟"},
-    Emoji{":sparkles:", "✨"},
-    Emoji{":party_popper:", "🎉"},
-    Emoji{":pig:", "🐷"},
-    Emoji{":new_moon_with_face:", "🌚"},
-    Emoji{":last_quarter_moon:", "🌗"},
-    Emoji{":new_moon:", "🌑"},
-    Emoji{":sun_with_face:", "🌞"},
-    Emoji{":full_moon_with_face:", "🌝"},
-    Emoji{":monkey_face:", "🐵"},
-    Emoji{":see_no_evil:", "🙈"},
-    Emoji{":hear_no_evil:", "🙉"},
-    Emoji{":speak_no_evil:", "🙊"},
-    Emoji{":crown:", "👑"},
-    Emoji{":pray:", "🙏"},
-    Emoji{":bangbang:", "‼️"},
-    Emoji{":question:", "❓"},
-    Emoji{":sunglasses:", "😎"},
-    Emoji{":heart_eyes:", "😍"},
-
-    // Regional Indicators
-    Emoji{":zero:", "0️⃣"}, Emoji{":one:", "1️⃣"},
-    Emoji{":two:", "2️⃣"}, Emoji{":three:", "3️⃣"},
-    Emoji{":four:", "4️⃣"}, Emoji{":five:", "5️⃣"},
-    Emoji{":six:", "6️⃣"}, Emoji{":seven:", "7️⃣"},
-    Emoji{":eight:", "8️⃣"}, Emoji{":nine:", "9️⃣"},
-
-    // Legacy Animated Emojis
-    custom::Shiggy,
-    custom::Hype,
-    custom::PetMaurice,
-    custom::Bonk,
-    custom::Partying,
-    custom::NedExplosion,
-    custom::PolarBear,
-    custom::ColonThreeCat,
-    custom::CubeDance,
-    custom::CubeSpeen,
-    custom::CubeHyperThink,
-    custom::DeltaruneExplosion,
-
-    // Animated Emojis
-    custom::TrolleyZoom,
-
-    // alt names
-    Emoji{":shocked_face:", "😱"},
-    Emoji{":folded_hands:", "🙏"},
-};
-
-inline static Label::EmojiMap EmojiSheet = {
-    // Level difficulties
-    custom::DiffNA, custom::DiffAuto, custom::DiffEasy,
-    custom::DiffNormal, custom::DiffHard, custom::DiffHarder,
-    custom::DiffInsane, custom::DiffEasyDemon, custom::DiffMediumDemon,
-    custom::DiffHardDemon, custom::DiffInsaneDemon, custom::DiffExtremeDemon,
-    custom::DiffCasual, custom::DiffTough, custom::DiffCruel, custom::DiffCreul,
-
-    // Currency
-    custom::Orb, custom::Orbs, custom::Diamond, custom::Diamonds,
-
-    // Locks
-    custom::Locked, custom::LockedGray, custom::Unlocked,
-
-    // Coins
-    custom::GoldCoin, custom::UncollectedUserCoin, custom::UserCoinUnverified,
-    custom::UserCoin, custom::Points,
-
-    // Mod badges
-    custom::Mod, custom::ElderMod, custom::LeaderboardMod,
-
-    // Legacy set
-    custom::AmongUs, custom::Amogus, custom::Bruh, custom::Carlos,
-    custom::Clueless, custom::Despair, custom::Despair2, custom::Ned,
-    custom::Pusab, custom::RobSmile, custom::Sip, custom::Splat,
-    custom::Teehee, custom::Trollface, custom::True, custom::Walter,
-    custom::Wha, custom::Whadahell, custom::YouShould, custom::Car,
-    custom::Zoink, custom::Shocked, custom::PoppinBottles, custom::Party,
-    custom::Potbor, custom::DabMeUp, custom::FireInTheHole, custom::Finger,
-    custom::Soggy, custom::Mayo, custom::Divine, custom::Bueno,
-    custom::RattleDash, custom::GD, custom::Geode, custom::Boar,
-    custom::MeWhen, custom::ChangeTopic, custom::TouchGrass, custom::GGGGGGGG,
-    custom::GDOK, custom::Hug, custom::Angy, custom::Lewd,
-    custom::Headpat, custom::Transcat, custom::Transcat2, custom::SkillIssue,
-    custom::Yes, custom::GunLeft, custom::GunRight, custom::Edge,
-    custom::Cologne, custom::Globed, custom::LevelThumbnails, custom::Oh,
-    custom::HolyMoly, custom::ThousandYardStare, custom::SpunchBob,
-    custom::FreakBob, custom::Nuhuh, custom::Yuhuh,
-
-    // Cube Emotes
-    custom::BoshyTime, custom::CubeBallin, custom::CubeConfused,
-    custom::CubeCool, custom::CubeHappy, custom::CubeLetsGo,
-    custom::CubePog, custom::CubeScared, custom::CubeStare,
-    custom::CubeThink, custom::CubeView, custom::CubeWink,
-    custom::DefaultAngry, custom::EeYikes, custom::FumoCube,
-    custom::RobTopPixel, custom::SmugZero,
-
-    // Cat Emotes
-    custom::CatBless, custom::CatCash, custom::CatComf,
-    custom::CatCool, custom::CatCop, custom::CatCorn,
-    custom::CatDerp, custom::CatFacepalm, custom::CatFine,
-    custom::CatGasm, custom::CatGasp, custom::CatGift,
-    custom::CatGrump, custom::CatGun, custom::CatHammer,
-    custom::CatHi, custom::CatHype, custom::CatLaugh,
-    custom::CatLick, custom::CatLoser, custom::CatLost,
-    custom::CatLove, custom::CatLul, custom::CatLurk,
-    custom::CatMusik, custom::CatOK, custom::CatPat,
-    custom::CatPls, custom::CatPog, custom::CatPout,
-    custom::CatRee, custom::CatShrug, custom::CatShy,
-    custom::CatSimp, custom::CatSip, custom::CatSleep,
-    custom::CatSmart, custom::CatSweat, custom::CatThinking,
-
-    // Player Icons
-    custom::PlayerDefault, custom::PlayerSdslayer, custom::PlayerEVW,
-    custom::PlayerTride, custom::PlayerColon, custom::PlayerRobTop,
-    custom::PlayerWulzy, custom::PlayerJuniper, custom::PlayerRiot,
-    custom::PlayerCyclic, custom::PlayerTheSillyDoggo, custom::PlayerUproxide,
-
-    // Custom Emojis
-    custom::EyesShock, custom::TrollSkull, custom::SlightSmile,
-
-    // Geometry Dash icons
-    U"⭐"_emoji, U"🌙"_emoji,
-    U"✔️"_emoji, U"❌"_emoji,
-    U"👍"_emoji, U"👎"_emoji,
-
-    // twemoji pack (Emojis in Comments)
-    U"💯"_emoji, U"🤫"_emoji, U"🧏"_emoji, U"🧏‍♂️"_emoji, U"🧏‍♀️"_emoji,
-    U"🐻"_emoji, U"💔"_emoji, U"🐱"_emoji, U"🐶"_emoji, U"🦊"_emoji,
-    U"🔫"_emoji, U"🤨"_emoji, U"🖕"_emoji, U"🗿"_emoji, U"🔥"_emoji,
-    U"🤓"_emoji, U"☢️"_emoji, U"😱"_emoji, U"💀"_emoji, U"😈"_emoji,
-    U"🗣️"_emoji, U"😭"_emoji, U"🍆"_emoji, U"🤡"_emoji, U"👅"_emoji,
-
-    // twemoji pack (Extended)
-    U"👽"_emoji, U"👶"_emoji, U"🤖"_emoji, U"❤️"_emoji, U"👻"_emoji,
-    U"🤯"_emoji, U"❄️"_emoji, U"🛌"_emoji, U"🧖"_emoji, U"🐟"_emoji,
-    U"✨"_emoji, U"🎉"_emoji, U"🐷"_emoji, U"🌚"_emoji, U"🌗"_emoji,
-    U"🌑"_emoji, U"🌞"_emoji, U"🌝"_emoji, U"🐵"_emoji, U"🙈"_emoji,
-    U"🙉"_emoji, U"🙊"_emoji, U"👑"_emoji, U"🙏"_emoji, U"‼️"_emoji,
-    U"❓"_emoji, U"😎"_emoji, U"😍"_emoji,
-
-    // Regional Indicators
-    U"0️⃣"_emoji, U"1️⃣"_emoji, U"2️⃣"_emoji, U"3️⃣"_emoji,
-    U"4️⃣"_emoji, U"5️⃣"_emoji, U"6️⃣"_emoji, U"7️⃣"_emoji,
-    U"8️⃣"_emoji, U"9️⃣"_emoji,
-};
-
-inline static Label::CustomNodeMap CustomNodeSheet = {
-    {
-        U"\U0001c300", [](std::u32string_view, uint32_t&) {
-            auto level = LevelTools::getLevel(1, false);
-            auto scene = PlayLayer::scene(level, false, false);
-            auto playLayer = scene->getChildByType<PlayLayer>(0);
-            playLayer->ignoreAnchorPointForPosition(false);
-            return playLayer;
-        }
-    },
-    // Legacy Animated Emojis
-    custom::Shiggy,
-    custom::Hype,
-    custom::PetMaurice,
-    custom::Bonk,
-    custom::Partying,
-    custom::NedExplosion,
-    custom::PolarBear,
-    custom::ColonThreeCat,
-    custom::CubeDance,
-    custom::CubeSpeen,
-    custom::CubeHyperThink,
-    custom::DeltaruneExplosion,
-
-    // Animated Emojis
-    custom::TrolleyZoom,
-};
+inline static Label::CustomNodeMap CustomNodeSheet = []() {
+    constexpr auto combined = CombineAnimated(EmojiGroups);
+    return Label::CustomNodeMap(combined.begin(), combined.end());
+}();

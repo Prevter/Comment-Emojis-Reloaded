@@ -234,7 +234,7 @@ void EmojiPicker::recreateGroups() const {
         } else if (category.name == "Favorites") {
             first = cocos2d::CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png");
         } else {
-            first = createEmojiSprite(category.emojis.front());
+            first = createEmojiSprite(category.icon);
         }
 
         if (!first) { continue; }
@@ -282,7 +282,7 @@ void EmojiPicker::recreateGroups() const {
     m_sidebarPanel->m_contentLayer->addChild(sidebarMenu);
 }
 
-cocos2d::CCNode* EmojiPicker::createEmojiSprite(const std::string& emoji) {
+cocos2d::CCNode* EmojiPicker::createEmojiSprite(std::string_view emoji) {
     std::string_view emojiView;
     bool found = false;
     for (auto& [name, content] : EmojiReplacements) {
@@ -299,13 +299,7 @@ cocos2d::CCNode* EmojiPicker::createEmojiSprite(const std::string& emoji) {
 
     auto utf32 = utf8_to_utf32(emojiView);
 
-    // check for custom emojis
-    auto chr = utf32.front();
-    auto utf32_raw = std::u32string_view(
-        utf32.data(),
-        utf32.size() - (chr >= 0x1c000 && chr <= 0x1cfff)
-    );
-
+    auto utf32_raw = std::u32string_view(utf32.data(), utf32.size());
     if (auto it = EmojiSheet.find(utf32_raw); it != EmojiSheet.end()) {
         return cocos2d::CCSprite::createWithSpriteFrameName(it->second);
     }
@@ -337,113 +331,15 @@ cocos2d::CCNode* EmojiPicker::encloseInContainer(CCNode* node, float size) {
     return node;
 }
 
-std::vector<EmojiPicker::EmojiCategory> const& EmojiPicker::getEmojiCategories() {
-    static std::vector<EmojiCategory> categories = {
-        { "Favorites", {} },
-        { "Frequently Used", {} },
-        {
-            "Geometry Dash",
-            {
-                ":na:", ":auto:", ":easy:", ":normal:",
-                ":hard:", ":harder:", ":insane:",
-                ":easydemon:", ":mediumdemon:", ":harddemon:",
-                ":insanedemon:", ":extremedemon:", ":casual:",
-                ":tough:", ":cruel:", ":creul:",
-                ":orb:", ":orbs:", ":diamond:", ":diamonds:",
-                ":locked:", ":lockedgray:", ":unlocked:",
-                ":goldcoin:", ":uncollectedusercoin:", ":usercoinunverified:",
-                ":usercoin:", ":points:", ":mod:", ":eldermod:", ":leaderboardmod:",
-                ":star:", ":moon:", ":check:", ":cross:", ":like:", ":dislike:",
-            }
-        },
-        {
-            "Twemoji",
-            {
-                // People
-                ":heart_eyes:", ":face_with_raised_eyebrow:", ":nerd:", ":sunglasses:", ":sob:",
-                ":exploding_head:", ":scream:", ":shushing_face:", ":smiling_imp:", ":clown:",
-                ":ghost:", ":skull:", ":alien:", ":robot:", ":middle_finger:",
-                ":pray:", ":tongue:", ":speaking_head:", ":baby:", ":deaf_person:",
-                ":deaf_woman:", ":deaf_man:", ":person_in_steamy_room:", ":crown:",
-
-                // Nature
-                ":dog:", ":cat:", ":fox:", ":bear:", ":pig:",
-                ":monkey_face:", ":see_no_evil:", ":hear_no_evil:", ":speak_no_evil:", ":fish:",
-                ":sun_with_face:", ":full_moon_with_face:", ":new_moon_with_face:", ":last_quarter_moon:", ":new_moon:",
-                ":sparkles:", ":fire:", ":snowflake:",
-
-                // Food
-                ":eggplant:",
-
-                // Travel
-                ":moyai:",
-
-                // Objects
-                ":gun:", ":sleeping_accommodation:", ":party_popper:",
-
-                // Symbols
-                ":heart:", ":broken_heart:", ":radioactive:", ":100:", ":question:",
-                ":bangbang:", ":zero:",":one:", ":two:", ":three:",
-                ":four:", ":five:", ":six:", ":seven:", ":eight:",
-                ":nine:",
-            }
-        },
-        {
-            "Legacy Set",
-            {
-                ":amongus:", ":amogus:", ":bruh:", ":carlos:", ":clueless:",
-                ":despair:", ":despair2:", ":ned:", ":pusab?:", ":robsmile:",
-                ":sip:", ":splat:", ":teehee:", ":trollface:", ":true:",
-                ":walter:", ":wha:", ":whadahell:", ":youshould:", ":car:",
-                ":zoink:", ":shocked:", ":poppinbottles:", ":party:", ":potbor:",
-                ":dabmeup:", ":fireinthehole:", ":finger:", ":soggy:", ":mayo:",
-                ":divine:", ":bueno:", ":rattledash:", ":gd:", ":geode:",
-                ":boar:", ":mewhen:", ":changetopic:", ":touchgrass:", ":gggggggg:",
-                ":gdok:", ":hug:", ":angy:", ":lewd:", ":headpat:",
-                ":transcat:", ":transcat2:", ":skillissue:", ":yes:", ":gunleft:",
-                ":gunright:", ":edge:", ":cologne:", ":globed:", ":levelthumbnails:",
-                ":oh:", ":holymoly:", ":1000yardstare:", ":spunchbob:", ":freakbob:",
-                ":nuhuh:", ":yuhuh:", ":shiggy:", ":hype:", ":petmaurice:",
-                ":bonk:", ":partying:", ":ned_explosion:", ":polarbear:", ":colonthreecat:",
-            }
-        },
-        {
-            "Custom Emojis",
-            {
-                ":eyesShock:", ":trollskull:", ":slight_smile:", ":trolleyzoom:"
-            }
-        },
-        {
-            "Cube Emotes (By @cyanflower)",
-            {
-                ":cubeballin:", ":cubeconfused:", ":cubecool:", ":cubehappy:", ":cubeletsgo:",
-                ":cubepog:", ":cubescared:", ":cubestare:", ":cubethink:", ":cubeview:",
-                ":cubewink:", ":defaultangry:", ":eeyikes:", ":fumocube:", ":robtoppixel:",
-                ":boshytime:", ":smugzero:", ":cubedance:", ":cubespeen:", ":cubehyperthink:"
-            }
-        },
-        {
-            "Cat Emotes (C# Discord Server)",
-            {
-                ":catbless:", ":catcash:", ":catcomf:", ":catcool:", ":catcop:",
-                ":catcorn:", ":catderp:", ":catfacepalm:", ":catfine:", ":catgasm:",
-                ":catgasp:", ":catgift:", ":catgrump:", ":catgun:", ":cathammer:",
-                ":cathi:", ":cathype:", ":catlaugh:", ":catlick:", ":catloser:",
-                ":catlost:", ":catlove:", ":catlul:", ":catlurk:", ":catmusik:",
-                ":catok:", ":catpat:", ":catpls:", ":catpog:", ":catpout:",
-                ":catree:", ":catshrug:", ":catshy:", ":catsimp:", ":catsip:",
-                ":catsleep:", ":catsmart:", ":catsweat:", ":catthinking:",
-            }
-        },
-        {
-            "Player Icons",
-            {
-                ":default:", ":sdslayer:", ":evw:", ":tride:", ":colon:",
-                ":robtop:", ":wulzy:", ":juniper:", ":riot:", ":cyclic:",
-                ":thesillydoggo:", ":uproxide:",
-            }
-        }
-    };
+std::vector<EmojiCategory> const& EmojiPicker::getEmojiCategories() {
+    static std::vector<EmojiCategory> categories = []() {
+        std::vector<EmojiCategory> res = {
+            { "Favorites", "", {} },
+            { "Frequently Used", "", {} }
+        };
+        PopulateCategoryInfos(EmojiGroups, res);
+        return res;
+    }();
 
     categories[0].emojis = std::move(getFavoriteEmojis());
     categories[1].emojis = std::move(getFrequentlyUsedEmojis());
