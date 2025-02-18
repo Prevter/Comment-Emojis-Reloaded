@@ -46,5 +46,14 @@
 		"id": "thesillydoggo.comment_emojis",
 		"version": "*",
 		"importance": "conflicting"
-	}]
+	}],
+	"settings": {
+		"frequently-used-emojis-limit": {
+			"name": "Frequently Used Emojis Limit",
+			"description": "How many emojis to store in the frequently used emojis list.",
+			"type": "int",
+			"default": 39,
+			"min": 0
+		}
+	}
 }

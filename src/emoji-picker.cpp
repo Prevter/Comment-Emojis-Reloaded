@@ -452,11 +452,33 @@ std::vector<EmojiPicker::EmojiCategory> const& EmojiPicker::getEmojiCategories()
 }
 
 std::vector<std::string> EmojiPicker::getFrequentlyUsedEmojis() {
-    return {};
+    auto emojis = geode::Mod::get()->getSavedValue<std::map<std::string, uint64_t>>("frequently-used-emojis", {});
+
+    std::vector<std::pair<std::string, uint64_t>> sortedEmojis(emojis.begin(), emojis.end());
+    std::ranges::sort(sortedEmojis, [](auto const& a, auto const& b) {
+        return a.second > b.second;
+    });
+
+    auto size = std::min<int64_t>(sortedEmojis.size(), geode::Mod::get()->getSettingValue<int64_t>("frequently-used-emojis-limit"));
+
+    // return the top N emojis
+    std::vector<std::string> result;
+    result.reserve(size);
+    for (int64_t i = 0; i < size; ++i) {
+        result.push_back(sortedEmojis[i].first);
+    }
+
+    return result;
 }
 
 std::vector<std::string> EmojiPicker::getFavoriteEmojis() {
     return geode::Mod::get()->getSavedValue<std::vector<std::string>>("favorite-emojis", {});
+}
+
+void EmojiPicker::incrementEmojiUsage(std::string const& emoji) {
+    auto emojis = geode::Mod::get()->getSavedValue<std::map<std::string, uint64_t>>("frequently-used-emojis", {});
+    emojis[emoji] += 1;
+    geode::Mod::get()->setSavedValue("frequently-used-emojis", emojis);
 }
 
 void EmojiPicker::toggleFavoriteEmoji(std::string const& emoji) {
@@ -523,6 +545,7 @@ cocos2d::CCNode* EmojiPicker::appendGroup(EmojiCategory const& category) const {
                 } else {
                     m_originalField->setString(originalText + emoji);
                 }
+                incrementEmojiUsage(emoji);
             }, [this, emoji] {
                 toggleFavoriteEmoji(emoji);
                 this->recreateGroups();

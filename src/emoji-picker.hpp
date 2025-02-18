@@ -29,6 +29,7 @@ protected:
     static std::vector<std::string> getFrequentlyUsedEmojis();
     static std::vector<std::string> getFavoriteEmojis();
 
+    static void incrementEmojiUsage(std::string const& emoji);
     static void toggleFavoriteEmoji(std::string const& emoji);
 
     void recreateGroups() const;
