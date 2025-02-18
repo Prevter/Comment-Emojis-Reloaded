@@ -249,7 +249,7 @@ struct EmojiGroup {
     }
 
     static consteval std::array<AnimatedEntry, AnimatedCount> getAnimated() {
-        std::array<AnimatedEntry, AnimatedCount> animated;
+        std::array<AnimatedEntry, AnimatedCount> animated{};
         size_t index = 0;
         ((!Emojis::isHidden && Emojis::isAnimated ? void(animated[index++] = {
             Emojis::animatedSprite.name,
@@ -290,10 +290,14 @@ constexpr auto CombineReplacements(auto tuple) {
         return std::array<Emoji, Size>{};
     } else {
         using Entry = std::tuple_element_t<Index, decltype(tuple)>;
-        constexpr auto children = Entry::getReplacements();
-        auto concat = CombineReplacements<Index + 1, Size + children.size()>(tuple);
-        std::copy(children.begin(), children.end(), concat.begin() + Size);
-        return concat;
+        if constexpr (Entry::TotalSize == 0) {
+            return CombineReplacements<Index + 1, Size>(tuple);
+        } else {
+            constexpr auto children = Entry::getReplacements();
+            auto concat = CombineReplacements<Index + 1, Size + children.size()>(tuple);
+            std::copy(children.begin(), children.end(), concat.begin() + Size);
+            return concat;
+        }
     }
 }
 
@@ -303,10 +307,14 @@ constexpr auto CombineRegulars(auto tuple) {
         return std::array<EmojiMapEntry, Size>{};
     } else {
         using Entry = std::tuple_element_t<Index, decltype(tuple)>;
-        constexpr auto children = Entry::getRegular();
-        auto concat = CombineRegulars<Index + 1, Size + children.size()>(tuple);
-        std::copy(children.begin(), children.end(), concat.begin() + Size);
-        return concat;
+        if constexpr (Entry::RegularCount == 0) {
+            return CombineRegulars<Index + 1, Size>(tuple);
+        } else {
+            constexpr auto children = Entry::getRegular();
+            auto concat = CombineRegulars<Index + 1, Size + children.size()>(tuple);
+            std::copy(children.begin(), children.end(), concat.begin() + Size);
+            return concat;
+        }
     }
 }
 
@@ -316,10 +324,14 @@ constexpr auto CombineAnimated(auto tuple) {
         return std::array<AnimatedEntry, Size>{};
     } else {
         using Entry = std::tuple_element_t<Index, decltype(tuple)>;
-        constexpr auto children = Entry::getAnimated();
-        auto concat = CombineAnimated<Index + 1, Size + children.size()>(tuple);
-        std::copy(children.begin(), children.end(), concat.begin() + Size);
-        return concat;
+        if constexpr (Entry::AnimatedCount == 0) {
+            return CombineAnimated<Index + 1, Size>(tuple);
+        } else {
+            constexpr auto children = Entry::getAnimated();
+            auto concat = CombineAnimated<Index + 1, Size + children.size()>(tuple);
+            std::copy(children.begin(), children.end(), concat.begin() + Size);
+            return concat;
+        }
     }
 }
 
