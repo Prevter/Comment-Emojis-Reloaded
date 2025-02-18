@@ -1,262 +1,28 @@
 # Comment Emojis Reloaded
 
-Revamp of the original "Emojis in Comments" mod by TheSillyDoggo.
+Revamp of the original "Emojis in Comments" mod by TheSillyDoggo.  
+(Note: This mod is a **recreation** and does not use any of the original code)
 
-Has improved performance and stability over the original mod.
+## Description
 
-## Emoji List
-**Twemoji**:
-- :100:
-- :shushing_face:
-- :deaf_person:
-- :deaf_man:
-- :deaf_woman:
-- :bear:
-- :broken_heart:
-- :cat:
-- :dog:
-- :fox:
-- :gun:
-- :face_with_raised_eyebrow:
-- :middle_finger:
-- :moyai:
-- :fire:
-- :nerd:
-- :radioactive:
-- :scream: (or :shocked_face:)
-- :skull:
-- :smiling_imp:
-- :speaking_head:
-- :sob:
-- :eggplant:
-- :clown:
-- :tongue:
-- :alien:
-- :baby:
-- :robot:
-- :heart:
-- :ghost:
-- :exploding_head:
-- :snowflake:
-- :sleeping_accommodation:
-- :person_in_steamy_room:
-- :fish:
-- :sparkles:
-- :party_popper:
-- :pig:
-- :new_moon_with_face:
-- :last_quarter_moon:
-- :new_moon:
-- :sun_with_face:
-- :full_moon_with_face:
-- :monkey_face:
-- :see_no_evil:
-- :hear_no_evil:
-- :speak_no_evil:
-- :crown:
-- :pray: (or :folded_hands:)
-- :bangbang:
-- :question:
-- :zero:
-- :two:
-- :four:
-- :six:
-- :eight:
-- :one:
-- :three:
-- :five:
-- :seven:
-- :nine:
-- :sunglasses:
-- :heart_eyes:
+This mod adds support for emojis in comments and profile posts.
+They follow the same format as Discord emojis, which means people without the mod can still know what you're trying to say.
 
-**Geometry Dash Icons**:
-- :star:
-- :moon:
-- :check:
-- :cross:
-- :like:
-- :dislike:
-- :na:
-- :auto:
-- :easy:
-- :normal:
-- :hard:
-- :harder:
-- :insane:
-- :easydemon:
-- :mediumdemon:
-- :harddemon:
-- :insanedemon:
-- :extremedemon:
-- :orb:
-- :orbs:
-- :diamond:
-- :diamonds:
-- :locked:
-- :lockedgray:
-- :unlocked:
-- :goldcoin:
-- :uncollectedusercoin:
-- :usercoinunverified:
-- :usercoin:
-- :points:
-- :mod:
-- :eldermod:
-- :leaderboardmod:
 
-**Custom Emojis**:
-- :amongus:
-- :amogus:
-- :bruh:
-- :carlos:
-- :clueless:
-- :despair:
-- :despair2:
-- :ned:
-- :pusab?:
-- :robsmile:
-- :sip:
-- :splat:
-- :teehee:
-- :trollface:
-- :true:
-- :walter:
-- :wha:
-- :whadahell:
-- :youshould:
-- :car:
-- :zoink:
-- :shocked:
-- :poppinbottles:
-- :party:
-- :potbor:
-- :dabmeup:
-- :fireinthehole:
-- :finger:
-- :soggy:
-- :mayo:
-- :divine:
-- :bueno:
-- :rattledash:
-- :gd:
-- :geode:
-- :boar:
-- :mewhen:
-- :changetopic:
-- :touchgrass:
-- :gggggggg:
-- :gdok:
-- :hug:
-- :angy:
-- :lewd:
-- :headpat:
-- :transcat:
-- :transcat2:
-- :skillissue:
-- :yes:
-- :gunleft:
-- :gunright:
-- :edge:
-- :cologne:
-- :globed:
-- :levelthumbnails:
-- :oh:
-- :holymoly:
-- :1000yardstare:
-- :spunchbob:
-- :freakbob:
-- :nuhuh:
-- :yuhuh:
-- :eyesShock:
-- :trollskull:
-- :slight_smile:
+## Usage
 
-**Cube Emotes (By @cyanflower)**:
-- :boshytime:
-- :cubeballin:
-- :cubeconfused:
-- :cubecool:
-- :cubehappy:
-- :cubeletsgo:
-- :cubepog:
-- :cubescared:
-- :cubestare:
-- :cubethink:
-- :cubeview:
-- :cubewink:
-- :defaultangry:
-- :eeyikes:
-- :fumocube:
-- :robtoppixel:
-- :smugzero:
+To use emojis, either type its placeholder or click the **Cube** icon in the bottom right corner of the comment box to open the emoji picker.
 
-**Cat Emotes (C# Discord Server)**:
-- :catbless:
-- :catcash:
-- :catcomf:
-- :catcool:
-- :catcop:
-- :catcorn:
-- :catderp:
-- :catfacepalm:
-- :catfine:
-- :catgasm:
-- :catgasp:
-- :catgift:
-- :catgrump:
-- :catgun:
-- :cathammer:
-- :cathi:
-- :cathype:
-- :catlaugh:
-- :catlick:
-- :catloser:
-- :catlost:
-- :catlove:
-- :catlul:
-- :catlurk:
-- :catmusik:
-- :catok:
-- :catpat:
-- :catpls:
-- :catpog:
-- :catpout:
-- :catree:
-- :catshrug:
-- :catshy:
-- :catsimp:
-- :catsip:
-- :catsleep:
-- :catsmart:
-- :catsweat:
-- :catthinking:
 
-**Player Icons**
-- :default:
-- :sdslayer:
-- :evw:
-- :tride:
-- :colon:
-- :robtop:
-- :wulzy:
-- :juniper:
-- :riot:
-- :cyclic:
-- :thesillydoggo:
-- :uproxide:
+## Changes over the original mod
+- A lot of new emojis
+- Improved performance and load times of comments
+- Fixed several alignment/spacing issues with labels and emojis
+- Favorite emojis (press and hold to favorite)
+- Frequently used emojis category
+- Collapsible categories with sidebar for easy navigation
 
-**Animated Emojis**:
-- :shiggy:
-- :hype:
-- :petmaurice:
-- :bonk:
-- :partying:
-- :ned_explosion:
-- :polarbear:
-- :colonthreecat:
-- :cubedance:
-- :cubespeen:
-- :cubehyperthink:
-- :deltaruneexplosion:
-- :trolleyzoom:
+
+## Credits
+- TheSillyDoggo for the [original mod](https://github.com/TheSillyDoggo/Comment-Emojis/)
+- [Twemoji](https://github.com/discord/twemoji) for the emoji images
