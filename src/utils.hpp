@@ -234,21 +234,21 @@ struct EmojiGroup {
     static constexpr auto RegularCount = Size - AnimatedCount;
     static constexpr auto Animated = AnimatedCount > 0;
 
-    consteval std::array<Emoji, TotalSize> getReplacements() const {
+    static consteval std::array<Emoji, TotalSize> getReplacements() {
         std::array<Emoji, TotalSize> replacements;
         size_t index = 0;
         ((replacements[index++] = Emojis::emoji), ...);
         return replacements;
     }
 
-    consteval std::array<EmojiMapEntry, Size> getRegular() const {
+    static consteval std::array<EmojiMapEntry, Size> getRegular() {
         std::array<EmojiMapEntry, Size> regular;
         size_t index = 0;
         ((Emojis::isHidden || Emojis::isAnimated ? void() : void(regular[index++] = Emojis::sprite)), ...);
         return regular;
     }
 
-    consteval std::array<AnimatedEntry, AnimatedCount> getAnimated() const {
+    static consteval std::array<AnimatedEntry, AnimatedCount> getAnimated() {
         std::array<AnimatedEntry, AnimatedCount> animated;
         size_t index = 0;
         ((!Emojis::isHidden && Emojis::isAnimated ? void(animated[index++] = {
@@ -258,7 +258,7 @@ struct EmojiGroup {
         return animated;
     }
 
-    constexpr EmojiCategory getCategory() const {
+    static EmojiCategory getCategory() {
         std::vector<std::string> emojis;
         ((Emojis::isHidden ? void() : emojis.push_back(std::string(Emojis::placeholder))), ...);
         return {
@@ -289,7 +289,8 @@ constexpr auto CombineReplacements(auto tuple) {
     if constexpr (Index == std::tuple_size_v<decltype(tuple)>) {
         return std::array<Emoji, Size>{};
     } else {
-        constexpr auto children = std::get<Index>(tuple).getReplacements();
+        using Entry = std::tuple_element_t<Index, decltype(tuple)>;
+        constexpr auto children = Entry::getReplacements();
         auto concat = CombineReplacements<Index + 1, Size + children.size()>(tuple);
         std::copy(children.begin(), children.end(), concat.begin() + Size);
         return concat;
@@ -301,7 +302,8 @@ constexpr auto CombineRegulars(auto tuple) {
     if constexpr (Index == std::tuple_size_v<decltype(tuple)>) {
         return std::array<EmojiMapEntry, Size>{};
     } else {
-        constexpr auto children = std::get<Index>(tuple).getRegular();
+        using Entry = std::tuple_element_t<Index, decltype(tuple)>;
+        constexpr auto children = Entry::getRegular();
         auto concat = CombineRegulars<Index + 1, Size + children.size()>(tuple);
         std::copy(children.begin(), children.end(), concat.begin() + Size);
         return concat;
@@ -313,7 +315,8 @@ constexpr auto CombineAnimated(auto tuple) {
     if constexpr (Index == std::tuple_size_v<decltype(tuple)>) {
         return std::array<AnimatedEntry, Size>{};
     } else {
-        constexpr auto children = std::get<Index>(tuple).getAnimated();
+        using Entry = std::tuple_element_t<Index, decltype(tuple)>;
+        constexpr auto children = Entry::getAnimated();
         auto concat = CombineAnimated<Index + 1, Size + children.size()>(tuple);
         std::copy(children.begin(), children.end(), concat.begin() + Size);
         return concat;
@@ -323,7 +326,8 @@ constexpr auto CombineAnimated(auto tuple) {
 template <size_t Index = 0>
 void PopulateCategoryInfos(auto tuple, std::vector<EmojiCategory>& categories) {
     if constexpr (Index != std::tuple_size_v<decltype(tuple)>) {
-        categories.push_back(std::move(std::get<Index>(tuple).getCategory()));
+        using Entry = std::tuple_element_t<Index, decltype(tuple)>;
+        categories.push_back(std::move(Entry::getCategory()));
         PopulateCategoryInfos<Index + 1>(tuple, categories);
     }
 }
