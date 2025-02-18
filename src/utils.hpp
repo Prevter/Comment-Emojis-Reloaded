@@ -241,8 +241,8 @@ struct EmojiGroup {
         return replacements;
     }
 
-    static consteval std::array<EmojiMapEntry, Size> getRegular() {
-        std::array<EmojiMapEntry, Size> regular;
+    static consteval std::array<EmojiMapEntry, RegularCount> getRegular() {
+        std::array<EmojiMapEntry, RegularCount> regular;
         size_t index = 0;
         ((Emojis::isHidden || Emojis::isAnimated ? void() : void(regular[index++] = Emojis::sprite)), ...);
         return regular;
