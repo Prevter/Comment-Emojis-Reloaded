@@ -22,7 +22,8 @@
 				"resources/emojis/cube/*.png",
 				"resources/emojis/custom/*.png",
 				"resources/emojis/cat/*.png",
-				"resources/emojis/players/*.png"
+				"resources/emojis/players/*.png",
+				"resources/emojis/samsung/*.png"
 			],
 			"AnimojiSheet": [
 				"resources/emojis/animated/bonk/*.png",

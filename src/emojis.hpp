@@ -135,10 +135,32 @@ constexpr auto EmojiGroups = std::tuple<
     >,
     EmojiGroup<
         "Custom Emojis", ":eyesShock:",
-        Unimoji<"eyesShock", 0x1c100>,     Unimoji<"trollskull", 0x1c101>,
-        Unimoji<"slight_smile2", 0x1c102>,
+        Unimoji<"eyesShock", 0x1c100>,       Unimoji<"trollskull", 0x1c101>,
+        Unimoji<"laughAtThisUser", 0x1c102>, Unimoji<"ballCat", 0x1c103>,
+        Unimoji<"bigBrain", 0x1c104>,        Unimoji<"breeble", 0x1c105>,
+        Unimoji<"car2", 0x1c106>,            Unimoji<"frowning4", 0x1c107>,
+        Unimoji<"joeDefeated", 0x1c108>,     Unimoji<"joeShrug", 0x1c109>,
+        Unimoji<"letsgo", 0x1c10a>,          Unimoji<"linus", 0x1c10b>,
+        Unimoji<"moyai_cube", 0x1c10c>,      Unimoji<"queminem", 0x1c10d>,
+        Unimoji<"sad_markus", 0x1c10e>,      Unimoji<"spike", 0x1c10f>,
+        Unimoji<"steam_happy", 0x1c110>,     Unimoji<"trol", 0x1c111>,
+        Unimoji<"trolley", 0x1c112>,
         // Animated
         Unimoji<"trolleyzoom", 0x1c60c, 178, 25>, Unimoji<"fishspin", 0x1c60d, 144, 28>
+    >,
+    EmojiGroup<
+        "Samsung Emojis", ":grinning:",
+        Unimoji<"grinning", 0x1c300>,      Unimoji<"smiley", 0x1c301>,
+        Unimoji<"yaay", 0x1c302>,          Unimoji<"cheeky", 0x1c303>,
+        Unimoji<"slight_smile2", 0x1c304>, Unimoji<"blushing", 0x1c305>,
+        Unimoji<"bleh", 0x1c306>,          Unimoji<"hugging", 0x1c307>,
+        Unimoji<"brother", 0x1c308>,       Unimoji<"unamused", 0x1c309>,
+        Unimoji<"proud", 0x1c30a>,         Unimoji<"pensive2", 0x1c30b>,
+        Unimoji<"nauseated", 0x1c30c>,     Unimoji<"cool", 0x1c30d>,
+        Unimoji<"whatthe", 0x1c30e>,       Unimoji<"slight_frown2", 0x1c30f>,
+        Unimoji<"whatthef", 0x1c310>,      Unimoji<"cry2", 0x1c311>,
+        Unimoji<"sobbing", 0x1c312>,       Unimoji<"evil", 0x1c313>,
+        Unimoji<"skull2", 0x1c314>
     >,
     EmojiGroup<
         "Cube Emotes (By @cyanflower)", ":cubehappy:",
