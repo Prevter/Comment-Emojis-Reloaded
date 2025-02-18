@@ -556,7 +556,7 @@ cocos2d::CCNode* EmojiPicker::appendGroup(EmojiCategory const& category) const {
         menu->addChild(item);
     }
 
-    auto isCollapsed = geode::Mod::get()->getSavedValue<bool>(fmt::format("collapsed/{}", category.name), false);
+    auto isCollapsed = geode::Mod::get()->getSaveContainer()["collapsed"][category.name].asBool().unwrapOr(false);
     auto collapseBtnSprite = cocos2d::CCSprite::createWithSpriteFrameName("edit_downBtn_001.png");
     collapseBtnSprite->setScale(0.6f);
 
@@ -601,7 +601,7 @@ cocos2d::CCNode* EmojiPicker::appendGroup(EmojiCategory const& category) const {
     auto collapseBtn = geode::cocos::CCMenuItemExt::createSpriteExtra(
         collapseBtnNode, [this, menu, bg, menuContainer, collapseBtnSprite, bgHeight, category = category.name](auto) {
             bool visible = !menu->isVisible();
-            geode::Mod::get()->setSavedValue(fmt::format("collapsed/{}", category), !visible);
+            geode::Mod::get()->getSaveContainer()["collapsed"][category] = !visible;
             menu->setVisible(visible);
             bg->setVisible(visible);
             collapseBtnSprite->runAction(cocos2d::CCRotateTo::create(0.1f, visible ? 0.f : -90.f));
