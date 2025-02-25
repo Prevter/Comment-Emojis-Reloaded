@@ -8,7 +8,7 @@
 	},
 	"id": "prevter.comment_emojis",
 	"name": "Comment Emojis Reloaded",
-	"version": "v1.0.1",
+	"version": "v1.0.2",
 	"developer": "prevter",
 	"description": "Emojis support in comments",
 	"tags": [ "customization", "interface", "enhancement", "online" ],
@@ -47,11 +47,12 @@
 	"dependencies": {
 		"geode.node-ids": "1.19.0"
 	},
-	"incompatibilities": [{
-		"id": "thesillydoggo.comment_emojis",
-		"version": "*",
-		"importance": "conflicting"
-	}],
+	"incompatibilities": {
+		"thesillydoggo.comment_emojis": {
+			"version": "*",
+			"importance": "conflicting"
+		}
+	},
 	"settings": {
 		"frequently-used-emojis-limit": {
 			"name": "Frequently Used Emojis Limit",
