@@ -617,12 +617,7 @@ void Label::updateCharsWrapped() {
         }
 
         // check if we should break the word
-        if (m_breakWords > 0 && i - wordStart >= m_breakWords) {
-            words.push_back(textSV.substr(wordStart, i - wordStart));
-            wordStart = i;
-            lines.push_back(std::move(words));
-            words.clear();
-        } else if (textSV[i] == '\n') {
+        if (textSV[i] == '\n') {
             words.push_back(textSV.substr(wordStart, i - wordStart));
             wordStart = i + 1;
             lines.push_back(std::move(words));
@@ -631,6 +626,9 @@ void Label::updateCharsWrapped() {
             words.push_back(textSV.substr(wordStart, i - wordStart + 1));
             lines.push_back(std::move(words));
             words.clear();
+        } else if (m_breakWords > 0 && i - wordStart >= m_breakWords) {
+            words.push_back(textSV.substr(wordStart, i - wordStart));
+            wordStart = i;
         }
     }
     if (!words.empty()) {
