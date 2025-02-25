@@ -770,7 +770,7 @@ void Label::updateCharsWrapped() {
         for (auto& word : spriteLine) {
             // auto wordWidth = getWordWidth(word.sprites);
             auto wordWidth = (word.toX - word.fromX) / scaleFactor;
-            nextX += word.xOffset;
+            // nextX += word.xOffset;
 
             if (nextX + wordWidth > maxWidth) {
                 // wrap the line
