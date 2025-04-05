@@ -81,7 +81,7 @@ class $modify(CommentCellHook, CommentCell) {
 // fix for iOS having a define by default
 #ifdef CommentType
 #undef CommentType
-#define CommentType CommentType
+enum class CommentType {};
 #endif
 
 class $modify(ShareCommentLayerHook, ShareCommentLayer) {
