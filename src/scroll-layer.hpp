@@ -1,7 +1,7 @@
 // https://github.com/EclipseMenu/EclipseMenu/blob/main/src/modules/gui/cocos/popup/scroll-layer.hpp
 #pragma once
 #include <cocos2d.h>
-#include <Geode/binding/CCMenuItemSpriteExtra.hpp
+#include <Geode/binding/CCMenuItemSpriteExtra.hpp>
 #include <Geode/binding/CCScrollLayerExt.hpp>
 #include <Geode/binding/CCScrollLayerExtDelegate.hpp>
 

@@ -2,6 +2,9 @@
 #include <Geode/modify/GameManager.hpp>
 #include <Geode/modify/ShareCommentLayer.hpp>
 
+#include <Geode/binding/GJComment.hpp>
+#include <Geode/Enums.hpp>
+
 #include "emoji-picker.hpp"
 #include "emojis.hpp"
 
