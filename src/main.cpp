@@ -78,6 +78,10 @@ class $modify(CommentCellHook, CommentCell) {
     }
 };
 
+#ifdef CommentType
+#undef CommentType
+#endif
+
 class $modify(ShareCommentLayerHook, ShareCommentLayer) {
     bool init(gd::string title, int charLimit, CommentType type, int ID, gd::string desc) {
         if (!ShareCommentLayer::init(title, charLimit, type, ID, desc)) {
