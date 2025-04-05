@@ -1,3 +1,8 @@
+#ifdef CommentType // fix for iOS having a define by default
+#undef CommentType
+enum class CommentType {};
+#endif
+
 #include <Geode/modify/CommentCell.hpp>
 #include <Geode/modify/GameManager.hpp>
 #include <Geode/modify/ShareCommentLayer.hpp>
@@ -77,12 +82,6 @@ class $modify(CommentCellHook, CommentCell) {
         m_mainLayer->addChild(newText);
     }
 };
-
-// fix for iOS having a define by default
-#ifdef CommentType
-#undef CommentType
-enum class CommentType {};
-#endif
 
 class $modify(ShareCommentLayerHook, ShareCommentLayer) {
     bool init(gd::string title, int charLimit, CommentType type, int ID, gd::string desc) {
