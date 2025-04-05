@@ -32,10 +32,6 @@ if (DEFINED ENV{GITHUB_ACTIONS})
     endif()
 endif()
 
-if ("${CMAKE_SYSTEM_NAME}" STREQUAL "iOS" OR IOS)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC CommentType=CommentType)
-endif()
-
 if (NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")
 else()
@@ -48,3 +44,7 @@ CPMAddPackage("gh:simdutf/simdutf@6.0.3")
 target_link_libraries(${PROJECT_NAME} simdutf)
 
 setup_geode_mod(${PROJECT_NAME})
+
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "iOS" OR IOS)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC CommentType=CommentType)
+endif()
