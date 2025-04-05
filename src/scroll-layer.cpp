@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <Geode/loader/Mod.hpp>
+#include <Geode/ui/ScrollLayer.hpp>
 #include <Geode/utils/cocos.hpp>
 
 // all thanks to https://github.com/CallocGD/GD-2.205-Decompiled
