@@ -1,5 +1,5 @@
-#ifdef CommentType // fix for iOS having a define by default
-#undef CommentType
+#ifdef GEODE_IS_IOS
+#undef CommentType // fix for iOS having a define by default
 enum class CommentType {};
 #endif
 
