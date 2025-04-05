@@ -1,8 +1,3 @@
-#ifdef GEODE_IS_IOS
-#undef CommentType // fix for iOS having a define by default
-enum class CommentType {};
-#endif
-
 #include <Geode/modify/CommentCell.hpp>
 #include <Geode/modify/GameManager.hpp>
 #include <Geode/modify/ShareCommentLayer.hpp>
