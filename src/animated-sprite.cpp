@@ -1,4 +1,5 @@
 #include "animated-sprite.hpp"
+#include <fmt/format.h>
 
 FrameAnimation* FrameAnimation::create(const char* frame_prefix, size_t frame_count, float delay) {
     auto ret = new FrameAnimation();

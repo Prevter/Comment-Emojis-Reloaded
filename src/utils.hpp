@@ -1,5 +1,7 @@
 #pragma once
 #include <Geode/binding/TextArea.hpp>
+#include <Geode/binding/MultilineBitmapFont.hpp>
+#include <Geode/loader/Mod.hpp>
 #include "animated-sprite.hpp"
 #include <algorithm>
 #include <array>

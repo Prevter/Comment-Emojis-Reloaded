@@ -1,4 +1,6 @@
 #include "label.hpp"
+#include <Geode/loader/Log.hpp>
+#include <Geode/utils/general.hpp>
 #include <iostream>
 #include <simdutf.h>
 #include <sstream>
