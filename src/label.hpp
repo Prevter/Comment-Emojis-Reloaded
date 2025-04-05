@@ -1,5 +1,12 @@
 #pragma once
+#include <Geode/Result.hpp>
+#include <cocos2d.h>
+
+#include <cstddef>
+#include <cstdint>
+#include <functional>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 

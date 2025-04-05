@@ -1,4 +1,5 @@
 #pragma once
+#include <cocos2d.h>
 #include "label.hpp"
 #include "scroll-layer.hpp"
 #include "utils.hpp"

@@ -32,7 +32,7 @@ void BMFontConfiguration::purgeCachedData() {
 
 bool BMFontConfiguration::initWithFNTfile(std::string_view fntFile) {
     std::string fntFileStr(fntFile);
-    #if defined(GEODE_IS_ANDROID) || !defined(NDEBUG)
+    #if defined(GEODE_IS_MOBILE) || !defined(NDEBUG)
     // on android, accessing internal assets manually won't work,
     // so we're just going to use cocos functions as intended.
     // oh and fullPathForFilename apparently crashes in debug mode, so we're using this in that case as well

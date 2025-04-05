@@ -1,4 +1,6 @@
 #include "scroll-layer.hpp"
+#include <algorithm>
+#include <cmath>
 
 // all thanks to https://github.com/CallocGD/GD-2.205-Decompiled
 // and also from https://github.com/geode-sdk/geode
