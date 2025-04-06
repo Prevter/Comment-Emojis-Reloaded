@@ -10,12 +10,11 @@ std::unordered_map<std::string, BMFontConfiguration>& getFontConfigs() {
     return s_fontConfigs;
 }
 
-BMFontConfiguration* BMFontConfiguration::create(std::string_view fntFile) {
+BMFontConfiguration* BMFontConfiguration::create(std::string const& fntFile) {
     auto& s_fontConfigs = getFontConfigs();
 
     // check if the font config is already loaded
-    std::string fntFileStr(fntFile);
-    auto it = s_fontConfigs.find(fntFileStr);
+    auto it = s_fontConfigs.find(fntFile);
     if (it != s_fontConfigs.end()) {
         return &it->second;
     }
@@ -25,28 +24,28 @@ BMFontConfiguration* BMFontConfiguration::create(std::string_view fntFile) {
     if (!config.initWithFNTfile(fntFile)) {
         return nullptr;
     }
-    return &s_fontConfigs.emplace(fntFileStr, std::move(config)).first->second;
+    return &s_fontConfigs.emplace(fntFile, std::move(config)).first->second;
 }
 
 void BMFontConfiguration::purgeCachedData() {
     getFontConfigs().clear();
 }
 
-bool BMFontConfiguration::initWithFNTfile(std::string_view fntFile) {
-    std::string fntFileStr(fntFile);
+bool BMFontConfiguration::initWithFNTfile(std::string const& fntFile) {
     #if defined(GEODE_IS_MOBILE) || !defined(NDEBUG)
     // on android, accessing internal assets manually won't work,
     // so we're just going to use cocos functions as intended.
     // oh and fullPathForFilename apparently crashes in debug mode, so we're using this in that case as well
-    auto ccString = cocos2d::CCString::createWithContentsOfFile(fntFileStr.c_str());
-    if (!ccString) {
+    size_t size = 0;
+    auto data = cocos2d::CCFileUtils::sharedFileUtils()->getFileData(fntFile.c_str(), "rb", &size);
+    if (!data || size == 0) {
         geode::log::error("Failed to read file '{}'", fntFileStr);
         return false;
     }
-    auto contents = ccString->getCString();
+    auto contents = std::string(static_cast<char*>(data), size);
     #else
     // for non-android, we can speed up reading by doing it manually
-    std::string fullPath = cocos2d::CCFileUtils::get()->fullPathForFilename(fntFileStr.c_str(), false);
+    std::string fullPath = cocos2d::CCFileUtils::get()->fullPathForFilename(fntFile.c_str(), false);
     auto contents = geode::utils::file::readString(fullPath).unwrapOrDefault();
     if (contents.empty()) {
         geode::log::error("Failed to read file '{}'", fullPath);

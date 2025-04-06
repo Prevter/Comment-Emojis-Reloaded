@@ -43,12 +43,12 @@ struct std::hash<BMKerningPair> {
 /// @brief Reimplementation of the CCBMFontConfiguration class, with a few modifications to make it more modern.
 class BMFontConfiguration {
 public:
-    static BMFontConfiguration* create(std::string_view fntFile);
+    static BMFontConfiguration* create(std::string const& fntFile);
     static void purgeCachedData();
     BMFontConfiguration() = default;
 
 protected:
-    bool initWithFNTfile(std::string_view fntFile);
+    bool initWithFNTfile(std::string const& fntFile);
     bool initWithContents(std::string const& contents, std::string const& fntFile);
 
 private:
