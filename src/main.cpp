@@ -88,13 +88,13 @@ void createPickerButton(ShareCommentLayer* layer) {
     btnSprite->setOpacity(105);
 
     auto btn = geode::cocos::CCMenuItemExt::createSpriteExtra(
-        btnSprite, [this](auto) {
-            EmojiPicker::create(m_commentInput)->show();
+        btnSprite, [layer](auto) {
+            EmojiPicker::create(layer->m_commentInput)->show();
         }
     );
     btn->setID("emoji-picker"_spr);
     btn->setPosition(175.f, 36.5f);
-    this->m_buttonMenu->addChild(btn);
+    layer->m_buttonMenu->addChild(btn);
 }
 
 #ifndef GEODE_IS_IOS
@@ -103,9 +103,7 @@ class $modify(ShareCommentLayerHook, ShareCommentLayer) {
         if (!ShareCommentLayer::init(title, charLimit, type, ID, desc)) {
             return false;
         }
-        
         createPickerButton(this);
-        
         return true;
     }
 };
