@@ -97,7 +97,7 @@ void createPickerButton(ShareCommentLayer* layer) {
     layer->m_buttonMenu->addChild(btn);
 }
 
-#ifndef GEODE_IS_IOS
+// #ifndef GEODE_IS_IOS
 class $modify(ShareCommentLayerHook, ShareCommentLayer) {
     bool init(gd::string title, int charLimit, CommentType type, int ID, gd::string desc) {
         if (!ShareCommentLayer::init(title, charLimit, type, ID, desc)) {
@@ -107,28 +107,28 @@ class $modify(ShareCommentLayerHook, ShareCommentLayer) {
         return true;
     }
 };
-#else
-constexpr uintptr_t ShareCommentLayer_init_addr = 0x1d53f0;
-static_assert(GEODE_COMP_GD_VERSION == 22074, "GD version mismatch");
+// #else
+// constexpr uintptr_t ShareCommentLayer_init_addr = 0x1d53f0;
+// static_assert(GEODE_COMP_GD_VERSION == 22074, "GD version mismatch");
 
-// Due to some weirdness with CommentType define on iOS, this function is not hookable via normal means
-// So we're manually hooking the init function instead :P
-bool ShareCommentLayer_init(ShareCommentLayer* self, gd::string title, int charLimit, int type, int ID, gd::string desc) {
-    using init_t = bool(*)(ShareCommentLayer*, gd::string, int, int, int, gd::string);
-    static auto init = (init_t) (geode::base::get() + ShareCommentLayer_init_addr);
-    if (!init(self, title, charLimit, type, ID, desc)) {
-        return false;
-    }
-    createPickerButton(self);
-    return true;
-}
+// // Due to some weirdness with CommentType define on iOS, this function is not hookable via normal means
+// // So we're manually hooking the init function instead :P
+// bool ShareCommentLayer_init(ShareCommentLayer* self, gd::string title, int charLimit, int type, int ID, gd::string desc) {
+//     using init_t = bool(*)(ShareCommentLayer*, gd::string, int, int, int, gd::string);
+//     static auto init = (init_t) (geode::base::get() + ShareCommentLayer_init_addr);
+//     if (!init(self, title, charLimit, type, ID, desc)) {
+//         return false;
+//     }
+//     createPickerButton(self);
+//     return true;
+// }
 
-$execute {
-    geode::Mod::get()->hook(
-        (void*) (geode::base::get() + ShareCommentLayer_init_addr),
-        &ShareCommentLayer_init,
-        "ShareCommentLayer::init",
-        tulip::hook::TulipConvention::Thiscall
-    );
-}
-#endif
+// $execute {
+//     geode::Mod::get()->hook(
+//         (void*) (geode::base::get() + ShareCommentLayer_init_addr),
+//         &ShareCommentLayer_init,
+//         "ShareCommentLayer::init",
+//         tulip::hook::TulipConvention::Thiscall
+//     );
+// }
+// #endif
