@@ -81,10 +81,6 @@ class $modify(CommentCellHook, CommentCell) {
     }
 };
 
-void createPickerButton(ShareCommentLayer* layer) {
-
-}
-
 class $modify(ShareCommentLayerHook, ShareCommentLayer) {
     bool init(gd::string title, int charLimit, CommentType type, int ID, gd::string desc) {
         if (!ShareCommentLayer::init(title, charLimit, type, ID, desc)) {
