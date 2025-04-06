@@ -36,7 +36,7 @@ bool BMFontConfiguration::initWithFNTfile(std::string const& fntFile) {
     // on android, accessing internal assets manually won't work,
     // so we're just going to use cocos functions as intended.
     // oh and fullPathForFilename apparently crashes in debug mode, so we're using this in that case as well
-    size_t size = 0;
+    unsigned long size = 0;
     auto data = cocos2d::CCFileUtils::sharedFileUtils()->getFileData(fntFile.c_str(), "rb", &size);
     if (!data || size == 0) {
         geode::log::error("Failed to read file '{}'", fntFile);
