@@ -323,7 +323,7 @@ struct Rect {
     }
 };
 
-Label* Label::create(std::string_view text, std::string_view font) {
+Label* Label::create(std::string_view text, std::string const& font) {
     auto ret = new Label();
     if (ret->init(text, font, BMFontAlignment::Left, 1.f)) {
         ret->autorelease();
@@ -333,7 +333,7 @@ Label* Label::create(std::string_view text, std::string_view font) {
     return nullptr;
 }
 
-Label* Label::create(std::string_view text, std::string_view font, float scale) {
+Label* Label::create(std::string_view text, std::string const& font, float scale) {
     auto ret = new Label();
     if (ret->init(text, font, BMFontAlignment::Left, scale)) {
         ret->autorelease();
@@ -343,7 +343,7 @@ Label* Label::create(std::string_view text, std::string_view font, float scale) 
     return nullptr;
 }
 
-Label* Label::create(std::string_view text, std::string_view font, BMFontAlignment alignment) {
+Label* Label::create(std::string_view text, std::string const& font, BMFontAlignment alignment) {
     auto ret = new Label();
     if (ret->init(text, font, alignment, 1.f)) {
         ret->autorelease();
@@ -353,7 +353,7 @@ Label* Label::create(std::string_view text, std::string_view font, BMFontAlignme
     return nullptr;
 }
 
-Label* Label::create(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale) {
+Label* Label::create(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale) {
     auto ret = new Label();
     if (ret->init(text, font, alignment, scale)) {
         ret->autorelease();
@@ -363,7 +363,7 @@ Label* Label::create(std::string_view text, std::string_view font, BMFontAlignme
     return nullptr;
 }
 
-Label* Label::createWrapped(std::string_view text, std::string_view font, float wrapWidth) {
+Label* Label::createWrapped(std::string_view text, std::string const& font, float wrapWidth) {
     auto ret = new Label();
     if (ret->initWrapped(text, font, BMFontAlignment::Left, 1.f, wrapWidth)) {
         ret->autorelease();
@@ -373,7 +373,7 @@ Label* Label::createWrapped(std::string_view text, std::string_view font, float 
     return nullptr;
 }
 
-Label* Label::createWrapped(std::string_view text, std::string_view font, float scale, float wrapWidth) {
+Label* Label::createWrapped(std::string_view text, std::string const& font, float scale, float wrapWidth) {
     auto ret = new Label();
     if (ret->initWrapped(text, font, BMFontAlignment::Left, scale, wrapWidth)) {
         ret->autorelease();
@@ -383,7 +383,7 @@ Label* Label::createWrapped(std::string_view text, std::string_view font, float 
     return nullptr;
 }
 
-Label* Label::createWrapped(std::string_view text, std::string_view font, BMFontAlignment alignment, float wrapWidth) {
+Label* Label::createWrapped(std::string_view text, std::string const& font, BMFontAlignment alignment, float wrapWidth) {
     auto ret = new Label();
     if (ret->initWrapped(text, font, alignment, 1.f, wrapWidth)) {
         ret->autorelease();
@@ -394,7 +394,7 @@ Label* Label::createWrapped(std::string_view text, std::string_view font, BMFont
 }
 
 Label* Label::createWrapped(
-    std::string_view text, std::string_view font, BMFontAlignment alignment, float scale, float wrapWidth
+    std::string_view text, std::string const& font, BMFontAlignment alignment, float scale, float wrapWidth
 ) {
     auto ret = new Label();
     if (ret->initWrapped(text, font, alignment, scale, wrapWidth)) {
@@ -464,7 +464,7 @@ void Label::enableEmojis(std::string const& sheetFileName, const EmojiMap* frame
         auto texture = cocos2d::CCTextureCache::get()->addImage(sheetFileName.c_str(), false);
         m_spriteSheetBatch->setTexture(texture);
     } else {
-        m_spriteSheetBatch = cocos2d::CCSpriteBatchNode::create(sheetFileName.c_str()));
+        m_spriteSheetBatch = cocos2d::CCSpriteBatchNode::create(sheetFileName.c_str());
         m_spriteSheetBatch->setID("emoji-sheet");
         this->addChild(m_spriteSheetBatch.node, 0, -1);
     }
@@ -1186,7 +1186,7 @@ void Label::updateOpacity() const {
     }
 }
 
-bool Label::init(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale) {
+bool Label::init(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale) {
     m_fontConfig = BMFontConfiguration::create(font);
     if (!m_fontConfig) {
         return false;
@@ -1211,7 +1211,7 @@ bool Label::init(std::string_view text, std::string_view font, BMFontAlignment a
 }
 
 bool Label::initWrapped(
-    std::string_view text, std::string_view font, BMFontAlignment alignment, float scale, float wrapWidth
+    std::string_view text, std::string const& font, BMFontAlignment alignment, float scale, float wrapWidth
 ) {
     m_useWrap = true;
     m_wrapWidth = wrapWidth;

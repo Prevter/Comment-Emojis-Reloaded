@@ -88,28 +88,28 @@ enum class BMFontAlignment {
 class Label : public cocos2d::CCNode, public cocos2d::CCRGBAProtocol, public cocos2d::CCLabelProtocol {
 public:
     /// @brief Create a label with text and bitmap font file.
-    static Label* create(std::string_view text, std::string_view font);
+    static Label* create(std::string_view text, std::string const& font);
 
     /// @brief Create a label with text, bitmap font file, and scale.
-    static Label* create(std::string_view text, std::string_view font, float scale);
+    static Label* create(std::string_view text, std::string const& font, float scale);
 
     /// @brief Create a label with text, bitmap font file, and alignment.
-    static Label* create(std::string_view text, std::string_view font, BMFontAlignment alignment);
+    static Label* create(std::string_view text, std::string const& font, BMFontAlignment alignment);
 
     /// @brief Create a label with text, bitmap font file, alignment, and scale.
-    static Label* create(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale);
+    static Label* create(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale);
 
     /// @brief Create a wrapped label with text, bitmap font file, scale and wrap width.
-    static Label* createWrapped(std::string_view text, std::string_view font, float wrapWidth);
+    static Label* createWrapped(std::string_view text, std::string const& font, float wrapWidth);
 
     /// @brief Create a wrapped label with text, bitmap font file, alignment, scale and wrap width.
-    static Label* createWrapped(std::string_view text, std::string_view font, float scale, float wrapWidth);
+    static Label* createWrapped(std::string_view text, std::string const& font, float scale, float wrapWidth);
 
     /// @brief Create a wrapped label with text, bitmap font file, alignment, and wrap width.
-    static Label* createWrapped(std::string_view text, std::string_view font, BMFontAlignment alignment, float wrapWidth);
+    static Label* createWrapped(std::string_view text, std::string const& font, BMFontAlignment alignment, float wrapWidth);
 
     /// @brief Create a wrapped label with text, bitmap font file, alignment, scale and wrap width.
-    static Label* createWrapped(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale, float wrapWidth);
+    static Label* createWrapped(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale, float wrapWidth);
 
 public:
     using EmojiMap = std::unordered_map<std::u32string_view, const char*>;
@@ -255,8 +255,8 @@ public:
     const char* getString() override { return m_text.c_str(); }
 
 protected:
-    bool init(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale);
-    bool initWrapped(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale, float wrapWidth);
+    bool init(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale);
+    bool initWrapped(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale, float wrapWidth);
 
 protected:
     // Protocol properties
