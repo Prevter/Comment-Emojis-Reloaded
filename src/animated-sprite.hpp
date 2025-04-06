@@ -1,4 +1,8 @@
 #pragma once
+#include <cocos2d.h>
+#include <cstddef>
+#include <string>
+#include <vector>
 
 class FrameAnimation : public cocos2d::CCSprite {
 public:

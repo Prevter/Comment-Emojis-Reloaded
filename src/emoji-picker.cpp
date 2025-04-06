@@ -1,5 +1,7 @@
 #include "emoji-picker.hpp"
 #include "emojis.hpp"
+#include <Geode/binding/CCTextInputNode.hpp>
+#include <Geode/ui/Notification.hpp>
 
 constexpr float ScrollViewHeight = 200.f;
 constexpr float ScrollViewWidth = 300.f;

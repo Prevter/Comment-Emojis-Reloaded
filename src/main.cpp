@@ -2,6 +2,9 @@
 #include <Geode/modify/GameManager.hpp>
 #include <Geode/modify/ShareCommentLayer.hpp>
 
+#include <Geode/binding/GJComment.hpp>
+#include <Geode/Enums.hpp>
+
 #include "emoji-picker.hpp"
 #include "emojis.hpp"
 
@@ -88,7 +91,7 @@ class $modify(ShareCommentLayerHook, ShareCommentLayer) {
         btnSprite->setScale(0.75f);
         btnSprite->setColor({ 0, 0, 0 });
         btnSprite->setOpacity(105);
-
+    
         auto btn = geode::cocos::CCMenuItemExt::createSpriteExtra(
             btnSprite, [this](auto) {
                 EmojiPicker::create(m_commentInput)->show();

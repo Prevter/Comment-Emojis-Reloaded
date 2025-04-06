@@ -1,4 +1,7 @@
 #pragma once
+#include <cocos2d.h>
+#include <Geode/ui/Popup.hpp>
+#include <Geode/ui/Scrollbar.hpp>
 #include "label.hpp"
 #include "scroll-layer.hpp"
 #include "utils.hpp"

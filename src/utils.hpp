@@ -1,5 +1,14 @@
 #pragma once
+#include <Geode/binding/TextArea.hpp>
+#include <Geode/binding/MultilineBitmapFont.hpp>
+#include <Geode/loader/Mod.hpp>
 #include "animated-sprite.hpp"
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <string_view>
+#include <tuple>
+#include <utility>
 
 inline cocos2d::ccColor3B getTextAreaColor(const TextArea* textArea) {
     auto lines = textArea->m_label->m_lines;

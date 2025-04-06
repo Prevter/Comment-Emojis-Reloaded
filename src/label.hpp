@@ -1,5 +1,12 @@
 #pragma once
+#include <Geode/Result.hpp>
+#include <cocos2d.h>
+
+#include <cstddef>
+#include <cstdint>
+#include <functional>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -36,12 +43,12 @@ struct std::hash<BMKerningPair> {
 /// @brief Reimplementation of the CCBMFontConfiguration class, with a few modifications to make it more modern.
 class BMFontConfiguration {
 public:
-    static BMFontConfiguration* create(std::string_view fntFile);
+    static BMFontConfiguration* create(std::string const& fntFile);
     static void purgeCachedData();
     BMFontConfiguration() = default;
 
 protected:
-    bool initWithFNTfile(std::string_view fntFile);
+    bool initWithFNTfile(std::string const& fntFile);
     bool initWithContents(std::string const& contents, std::string const& fntFile);
 
 private:
@@ -81,28 +88,28 @@ enum class BMFontAlignment {
 class Label : public cocos2d::CCNode, public cocos2d::CCRGBAProtocol, public cocos2d::CCLabelProtocol {
 public:
     /// @brief Create a label with text and bitmap font file.
-    static Label* create(std::string_view text, std::string_view font);
+    static Label* create(std::string_view text, std::string const& font);
 
     /// @brief Create a label with text, bitmap font file, and scale.
-    static Label* create(std::string_view text, std::string_view font, float scale);
+    static Label* create(std::string_view text, std::string const& font, float scale);
 
     /// @brief Create a label with text, bitmap font file, and alignment.
-    static Label* create(std::string_view text, std::string_view font, BMFontAlignment alignment);
+    static Label* create(std::string_view text, std::string const& font, BMFontAlignment alignment);
 
     /// @brief Create a label with text, bitmap font file, alignment, and scale.
-    static Label* create(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale);
+    static Label* create(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale);
 
     /// @brief Create a wrapped label with text, bitmap font file, scale and wrap width.
-    static Label* createWrapped(std::string_view text, std::string_view font, float wrapWidth);
+    static Label* createWrapped(std::string_view text, std::string const& font, float wrapWidth);
 
     /// @brief Create a wrapped label with text, bitmap font file, alignment, scale and wrap width.
-    static Label* createWrapped(std::string_view text, std::string_view font, float scale, float wrapWidth);
+    static Label* createWrapped(std::string_view text, std::string const& font, float scale, float wrapWidth);
 
     /// @brief Create a wrapped label with text, bitmap font file, alignment, and wrap width.
-    static Label* createWrapped(std::string_view text, std::string_view font, BMFontAlignment alignment, float wrapWidth);
+    static Label* createWrapped(std::string_view text, std::string const& font, BMFontAlignment alignment, float wrapWidth);
 
     /// @brief Create a wrapped label with text, bitmap font file, alignment, scale and wrap width.
-    static Label* createWrapped(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale, float wrapWidth);
+    static Label* createWrapped(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale, float wrapWidth);
 
 public:
     using EmojiMap = std::unordered_map<std::u32string_view, const char*>;
@@ -113,11 +120,11 @@ public:
     /// @brief Get the contents of the label.
     [[nodiscard]] std::string const& getString() const { return m_text; }
     /// @brief Set the primary font of the label.
-    void setFont(std::string_view font);
+    void setFont(std::string const& font);
     /// @brief Add additional font to the label. (for multi-font labels)
-    void addFont(std::string_view font, std::optional<float> scale = std::nullopt);
+    void addFont(std::string const& font, std::optional<float> scale = std::nullopt);
     /// @brief Activate support for emojis in the label.
-    void enableEmojis(std::string_view sheetFileName, const EmojiMap* frameNames);
+    void enableEmojis(std::string const& sheetFileName, const EmojiMap* frameNames);
     /// @brief Activate support for custom nodes in the label.
     void enableCustomNodes(const CustomNodeMap* nodes);
     /// @brief Enable or disable line wrapping.
@@ -248,8 +255,8 @@ public:
     const char* getString() override { return m_text.c_str(); }
 
 protected:
-    bool init(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale);
-    bool initWrapped(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale, float wrapWidth);
+    bool init(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale);
+    bool initWrapped(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale, float wrapWidth);
 
 protected:
     // Protocol properties

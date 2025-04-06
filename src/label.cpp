@@ -1,4 +1,6 @@
 #include "label.hpp"
+#include <Geode/loader/Log.hpp>
+#include <Geode/utils/general.hpp>
 #include <iostream>
 #include <simdutf.h>
 #include <sstream>
@@ -8,12 +10,11 @@ std::unordered_map<std::string, BMFontConfiguration>& getFontConfigs() {
     return s_fontConfigs;
 }
 
-BMFontConfiguration* BMFontConfiguration::create(std::string_view fntFile) {
+BMFontConfiguration* BMFontConfiguration::create(std::string const& fntFile) {
     auto& s_fontConfigs = getFontConfigs();
 
     // check if the font config is already loaded
-    std::string fntFileStr(fntFile);
-    auto it = s_fontConfigs.find(fntFileStr);
+    auto it = s_fontConfigs.find(fntFile);
     if (it != s_fontConfigs.end()) {
         return &it->second;
     }
@@ -23,28 +24,28 @@ BMFontConfiguration* BMFontConfiguration::create(std::string_view fntFile) {
     if (!config.initWithFNTfile(fntFile)) {
         return nullptr;
     }
-    return &s_fontConfigs.emplace(fntFileStr, std::move(config)).first->second;
+    return &s_fontConfigs.emplace(fntFile, std::move(config)).first->second;
 }
 
 void BMFontConfiguration::purgeCachedData() {
     getFontConfigs().clear();
 }
 
-bool BMFontConfiguration::initWithFNTfile(std::string_view fntFile) {
-    std::string fntFileStr(fntFile);
-    #if defined(GEODE_IS_ANDROID) || !defined(NDEBUG)
+bool BMFontConfiguration::initWithFNTfile(std::string const& fntFile) {
+    #if defined(GEODE_IS_MOBILE) || !defined(NDEBUG)
     // on android, accessing internal assets manually won't work,
     // so we're just going to use cocos functions as intended.
     // oh and fullPathForFilename apparently crashes in debug mode, so we're using this in that case as well
-    auto ccString = cocos2d::CCString::createWithContentsOfFile(fntFileStr.c_str());
-    if (!ccString) {
-        geode::log::error("Failed to read file '{}'", fntFileStr);
+    unsigned long size = 0;
+    auto data = cocos2d::CCFileUtils::sharedFileUtils()->getFileData(fntFile.c_str(), "rb", &size);
+    if (!data || size == 0) {
+        geode::log::error("Failed to read file '{}'", fntFile);
         return false;
     }
-    auto contents = ccString->getCString();
+    auto contents = std::string(reinterpret_cast<char*>(data), size);
     #else
     // for non-android, we can speed up reading by doing it manually
-    std::string fullPath = cocos2d::CCFileUtils::get()->fullPathForFilename(fntFileStr.c_str(), false);
+    std::string fullPath = cocos2d::CCFileUtils::get()->fullPathForFilename(fntFile.c_str(), false);
     auto contents = geode::utils::file::readString(fullPath).unwrapOrDefault();
     if (contents.empty()) {
         geode::log::error("Failed to read file '{}'", fullPath);
@@ -52,7 +53,7 @@ bool BMFontConfiguration::initWithFNTfile(std::string_view fntFile) {
     }
     #endif
 
-    return initWithContents(contents, fntFileStr);
+    return initWithContents(contents, fntFile);
 }
 
 #define WRAP_PARSE(expr) if (auto res = (expr); res.isErr()) { geode::log::error("{}", res.unwrapErr()); return false; }
@@ -322,7 +323,7 @@ struct Rect {
     }
 };
 
-Label* Label::create(std::string_view text, std::string_view font) {
+Label* Label::create(std::string_view text, std::string const& font) {
     auto ret = new Label();
     if (ret->init(text, font, BMFontAlignment::Left, 1.f)) {
         ret->autorelease();
@@ -332,7 +333,7 @@ Label* Label::create(std::string_view text, std::string_view font) {
     return nullptr;
 }
 
-Label* Label::create(std::string_view text, std::string_view font, float scale) {
+Label* Label::create(std::string_view text, std::string const& font, float scale) {
     auto ret = new Label();
     if (ret->init(text, font, BMFontAlignment::Left, scale)) {
         ret->autorelease();
@@ -342,7 +343,7 @@ Label* Label::create(std::string_view text, std::string_view font, float scale) 
     return nullptr;
 }
 
-Label* Label::create(std::string_view text, std::string_view font, BMFontAlignment alignment) {
+Label* Label::create(std::string_view text, std::string const& font, BMFontAlignment alignment) {
     auto ret = new Label();
     if (ret->init(text, font, alignment, 1.f)) {
         ret->autorelease();
@@ -352,7 +353,7 @@ Label* Label::create(std::string_view text, std::string_view font, BMFontAlignme
     return nullptr;
 }
 
-Label* Label::create(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale) {
+Label* Label::create(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale) {
     auto ret = new Label();
     if (ret->init(text, font, alignment, scale)) {
         ret->autorelease();
@@ -362,7 +363,7 @@ Label* Label::create(std::string_view text, std::string_view font, BMFontAlignme
     return nullptr;
 }
 
-Label* Label::createWrapped(std::string_view text, std::string_view font, float wrapWidth) {
+Label* Label::createWrapped(std::string_view text, std::string const& font, float wrapWidth) {
     auto ret = new Label();
     if (ret->initWrapped(text, font, BMFontAlignment::Left, 1.f, wrapWidth)) {
         ret->autorelease();
@@ -372,7 +373,7 @@ Label* Label::createWrapped(std::string_view text, std::string_view font, float 
     return nullptr;
 }
 
-Label* Label::createWrapped(std::string_view text, std::string_view font, float scale, float wrapWidth) {
+Label* Label::createWrapped(std::string_view text, std::string const& font, float scale, float wrapWidth) {
     auto ret = new Label();
     if (ret->initWrapped(text, font, BMFontAlignment::Left, scale, wrapWidth)) {
         ret->autorelease();
@@ -382,7 +383,7 @@ Label* Label::createWrapped(std::string_view text, std::string_view font, float 
     return nullptr;
 }
 
-Label* Label::createWrapped(std::string_view text, std::string_view font, BMFontAlignment alignment, float wrapWidth) {
+Label* Label::createWrapped(std::string_view text, std::string const& font, BMFontAlignment alignment, float wrapWidth) {
     auto ret = new Label();
     if (ret->initWrapped(text, font, alignment, 1.f, wrapWidth)) {
         ret->autorelease();
@@ -393,7 +394,7 @@ Label* Label::createWrapped(std::string_view text, std::string_view font, BMFont
 }
 
 Label* Label::createWrapped(
-    std::string_view text, std::string_view font, BMFontAlignment alignment, float scale, float wrapWidth
+    std::string_view text, std::string const& font, BMFontAlignment alignment, float scale, float wrapWidth
 ) {
     auto ret = new Label();
     if (ret->initWrapped(text, font, alignment, scale, wrapWidth)) {
@@ -416,7 +417,7 @@ void Label::setString(std::string_view text) {
     updateChars();
 }
 
-void Label::setFont(std::string_view font) {
+void Label::setFont(std::string const& font) {
     if (m_font == font) {
         return;
     }
@@ -438,7 +439,7 @@ void Label::setFont(std::string_view font) {
     updateChars();
 }
 
-void Label::addFont(std::string_view font, std::optional<float> scale) {
+void Label::addFont(std::string const& font, std::optional<float> scale) {
     auto newConfig = BMFontConfiguration::create(font);
     if (!newConfig) {
         return;
@@ -458,12 +459,12 @@ void Label::addFont(std::string_view font, std::optional<float> scale) {
     this->addChild(batch, 0, m_fontBatches.size());
 }
 
-void Label::enableEmojis(std::string_view sheetFileName, const EmojiMap* frameNames) {
+void Label::enableEmojis(std::string const& sheetFileName, const EmojiMap* frameNames) {
     if (m_spriteSheetBatch) {
-        auto texture = cocos2d::CCTextureCache::get()->addImage(sheetFileName.data(), false);
+        auto texture = cocos2d::CCTextureCache::get()->addImage(sheetFileName.c_str(), false);
         m_spriteSheetBatch->setTexture(texture);
     } else {
-        m_spriteSheetBatch = cocos2d::CCSpriteBatchNode::create(sheetFileName.data());
+        m_spriteSheetBatch = cocos2d::CCSpriteBatchNode::create(sheetFileName.c_str());
         m_spriteSheetBatch->setID("emoji-sheet");
         this->addChild(m_spriteSheetBatch.node, 0, -1);
     }
@@ -1185,7 +1186,7 @@ void Label::updateOpacity() const {
     }
 }
 
-bool Label::init(std::string_view text, std::string_view font, BMFontAlignment alignment, float scale) {
+bool Label::init(std::string_view text, std::string const& font, BMFontAlignment alignment, float scale) {
     m_fontConfig = BMFontConfiguration::create(font);
     if (!m_fontConfig) {
         return false;
@@ -1210,7 +1211,7 @@ bool Label::init(std::string_view text, std::string_view font, BMFontAlignment a
 }
 
 bool Label::initWrapped(
-    std::string_view text, std::string_view font, BMFontAlignment alignment, float scale, float wrapWidth
+    std::string_view text, std::string const& font, BMFontAlignment alignment, float scale, float wrapWidth
 ) {
     m_useWrap = true;
     m_wrapWidth = wrapWidth;
