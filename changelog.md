@@ -1,3 +1,6 @@
+# 1.1.0
+- Added iOS support
+
 # 1.0.2
 - Fixed extra wrapping of lines with long words
 - Tweaked word spacing to better match original
