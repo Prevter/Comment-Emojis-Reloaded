@@ -39,10 +39,10 @@ bool BMFontConfiguration::initWithFNTfile(std::string const& fntFile) {
     size_t size = 0;
     auto data = cocos2d::CCFileUtils::sharedFileUtils()->getFileData(fntFile.c_str(), "rb", &size);
     if (!data || size == 0) {
-        geode::log::error("Failed to read file '{}'", fntFileStr);
+        geode::log::error("Failed to read file '{}'", fntFile);
         return false;
     }
-    auto contents = std::string(static_cast<char*>(data), size);
+    auto contents = std::string(reinterpret_cast<char*>(data), size);
     #else
     // for non-android, we can speed up reading by doing it manually
     std::string fullPath = cocos2d::CCFileUtils::get()->fullPathForFilename(fntFile.c_str(), false);
@@ -53,7 +53,7 @@ bool BMFontConfiguration::initWithFNTfile(std::string const& fntFile) {
     }
     #endif
 
-    return initWithContents(contents, fntFileStr);
+    return initWithContents(contents, fntFile);
 }
 
 #define WRAP_PARSE(expr) if (auto res = (expr); res.isErr()) { geode::log::error("{}", res.unwrapErr()); return false; }
@@ -417,7 +417,7 @@ void Label::setString(std::string_view text) {
     updateChars();
 }
 
-void Label::setFont(std::string_view font) {
+void Label::setFont(std::string const& font) {
     if (m_font == font) {
         return;
     }
@@ -439,7 +439,7 @@ void Label::setFont(std::string_view font) {
     updateChars();
 }
 
-void Label::addFont(std::string_view font, std::optional<float> scale) {
+void Label::addFont(std::string const& font, std::optional<float> scale) {
     auto newConfig = BMFontConfiguration::create(font);
     if (!newConfig) {
         return;
@@ -459,12 +459,12 @@ void Label::addFont(std::string_view font, std::optional<float> scale) {
     this->addChild(batch, 0, m_fontBatches.size());
 }
 
-void Label::enableEmojis(std::string_view sheetFileName, const EmojiMap* frameNames) {
+void Label::enableEmojis(std::string const& sheetFileName, const EmojiMap* frameNames) {
     if (m_spriteSheetBatch) {
-        auto texture = cocos2d::CCTextureCache::get()->addImage(sheetFileName.data(), false);
+        auto texture = cocos2d::CCTextureCache::get()->addImage(sheetFileName.c_str(), false);
         m_spriteSheetBatch->setTexture(texture);
     } else {
-        m_spriteSheetBatch = cocos2d::CCSpriteBatchNode::create(sheetFileName.data());
+        m_spriteSheetBatch = cocos2d::CCSpriteBatchNode::create(sheetFileName.c_str()));
         m_spriteSheetBatch->setID("emoji-sheet");
         this->addChild(m_spriteSheetBatch.node, 0, -1);
     }

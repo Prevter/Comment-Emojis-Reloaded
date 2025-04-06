@@ -115,7 +115,7 @@ static_assert(GEODE_COMP_GD_VERSION == 22074, "GD version mismatch");
 // So we're manually hooking the init function instead :P
 bool ShareCommentLayer_init(ShareCommentLayer* self, gd::string title, int charLimit, int type, int ID, gd::string desc) {
     using init_t = bool(*)(ShareCommentLayer*, gd::string, int, int, int, gd::string);
-    static auto init = (init_t) geode::base::get() + ShareCommentLayer_init_addr;
+    static auto init = (init_t) (geode::base::get() + ShareCommentLayer_init_addr);
     if (!init(self, title, charLimit, type, ID, desc)) {
         return false;
     }
@@ -125,7 +125,7 @@ bool ShareCommentLayer_init(ShareCommentLayer* self, gd::string title, int charL
 
 $execute {
     geode::Mod::get()->hook(
-        (void*) geode::base::get() + ShareCommentLayer_init_addr,
+        (void*) (geode::base::get() + ShareCommentLayer_init_addr),
         &ShareCommentLayer_init,
         "ShareCommentLayer::init",
         tulip::hook::TulipConvention::Thiscall

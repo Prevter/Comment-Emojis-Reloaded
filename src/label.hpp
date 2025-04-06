@@ -120,11 +120,11 @@ public:
     /// @brief Get the contents of the label.
     [[nodiscard]] std::string const& getString() const { return m_text; }
     /// @brief Set the primary font of the label.
-    void setFont(std::string_view font);
+    void setFont(std::string const& font);
     /// @brief Add additional font to the label. (for multi-font labels)
-    void addFont(std::string_view font, std::optional<float> scale = std::nullopt);
+    void addFont(std::string const& font, std::optional<float> scale = std::nullopt);
     /// @brief Activate support for emojis in the label.
-    void enableEmojis(std::string_view sheetFileName, const EmojiMap* frameNames);
+    void enableEmojis(std::string const& sheetFileName, const EmojiMap* frameNames);
     /// @brief Activate support for custom nodes in the label.
     void enableCustomNodes(const CustomNodeMap* nodes);
     /// @brief Enable or disable line wrapping.
