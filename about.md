@@ -21,7 +21,7 @@ To use emojis, either type its placeholder or click the **Cube** icon in the bot
 - Favorite emojis (press and hold to favorite)
 - Frequently used emojis category
 - Collapsible categories with sidebar for easy navigation
-
+- Added support for @mentions in comments
 
 ## Credits
 - TheSillyDoggo for the [original mod](https://github.com/TheSillyDoggo/Comment-Emojis/)

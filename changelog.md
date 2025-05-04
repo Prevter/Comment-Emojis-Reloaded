@@ -1,3 +1,8 @@
+# 1.2.0
+- Bump Geode version to 4.4.0
+- Fix android32 issues
+- Added @mentions support
+
 # 1.1.0
 - Added iOS support
 

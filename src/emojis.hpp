@@ -2,6 +2,13 @@
 #include "label.hpp"
 #include "utils.hpp"
 
+#include <Geode/binding/GJSearchObject.hpp>
+#include <Geode/binding/LevelBrowserLayer.hpp>
+
+constexpr char32_t MentionChar = 0x1c900;
+constexpr std::u32string_view MentionCharStrView = { &MentionChar, 1 };
+constexpr auto MentionCharStr = UTF32ToUTF8<MentionChar>::utf8_view;
+
 constexpr auto EmojiGroups = std::tuple<
     EmojiGroup<
         "Geometry Dash", ":easy:",
@@ -220,5 +227,41 @@ inline static Label::EmojiMap EmojiSheet = []() {
 
 inline static Label::CustomNodeMap CustomNodeSheet = []() {
     constexpr auto combined = CombineAnimated(EmojiGroups);
-    return Label::CustomNodeMap(combined.begin(), combined.end());
+    Label::CustomNodeMap res(combined.begin(), combined.end());
+
+    // Add the mention emoji
+    res.emplace(
+        MentionCharStrView,
+        [](std::u32string_view input, uint32_t& index) -> cocos2d::CCNode* {
+            int len = input[1];
+            auto name = input.substr(2, len);
+            index += len + 1;
+
+            auto utf8NameRes = geode::utils::string::utf32ToUtf8(name);
+            if (!utf8NameRes) {
+                geode::log::warn("Failed to convert mention emoji name to UTF-8");
+                return nullptr;
+            }
+
+            auto utf8Name = std::move(utf8NameRes).unwrap();
+            auto menu = cocos2d::CCMenu::create();
+            auto label = Label::create(utf8Name, "chatFont.fnt");
+            auto size = label->getContentSize();
+            label->setColor({ 186, 209, 255 });
+            menu->setContentSize(size);
+            auto btn = geode::cocos::CCMenuItemExt::createSpriteExtra(
+                label, [name = utf8Name.substr(1)](auto) {
+                    cocos2d::CCDirector::get()->pushScene(cocos2d::CCTransitionFade::create(
+                        0.5f, LevelBrowserLayer::scene(GJSearchObject::create(SearchType::Users, name))
+                    ));
+                }
+            );
+            menu->addChild(btn);
+            btn->setPosition(size * 0.5f);
+            menu->ignoreAnchorPointForPosition(false);
+            return menu;
+        }
+    );
+
+    return res;
 }();

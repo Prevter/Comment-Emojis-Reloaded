@@ -8,12 +8,50 @@
 #include "emoji-picker.hpp"
 #include "emojis.hpp"
 
+constexpr bool isValidUsernameChar(char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_';
+}
+
 std::string replaceEmojis(std::string_view text) {
     auto result = std::string(text);
 
     // replace emoji placeholders
     for (auto [name, emoji] : EmojiReplacements) {
         findAndReplace(result, name, emoji);
+    }
+
+    // parse @mentions
+    auto it = result.begin();
+    while (it != result.end()) {
+        if (*it == '@') {
+            auto start = it;
+            ++it;
+            while (it != result.end() && isValidUsernameChar(*it)) {
+                ++it;
+            }
+
+            char nameLength = std::min<ptrdiff_t>(std::distance(start, it), 255);
+            if (nameLength == 0) {
+                ++it;
+                continue;
+            }
+
+            auto name = std::string(start, it);
+            auto replacement = fmt::format("{}{}{}", MentionCharStr, nameLength, name);
+
+            auto startIndex = std::distance(result.begin(), start);
+            if (startIndex + replacement.size() > result.size()) {
+                // not enough space, extend the string
+                result.resize(startIndex + replacement.size());
+            }
+
+            result.replace(startIndex, nameLength, replacement);
+
+            // restore the iterator
+            it = result.begin() + startIndex + replacement.size();
+        } else {
+            ++it;
+        }
     }
 
     return result;
