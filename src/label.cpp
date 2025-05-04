@@ -2,8 +2,8 @@
 #include <Geode/loader/Log.hpp>
 #include <Geode/utils/general.hpp>
 #include <iostream>
-#include <simdutf.h>
 #include <sstream>
+#include <Geode/utils/string.hpp>
 
 std::unordered_map<std::string, BMFontConfiguration>& getFontConfigs() {
     static std::unordered_map<std::string, BMFontConfiguration> s_fontConfigs;
@@ -244,19 +244,6 @@ geode::Result<> BMFontConfiguration::parseKerningEntry(std::istringstream& line)
 
 #undef WRAP_PARSE
 
-std::u32string utf8_to_utf32(std::string_view text) {
-    size_t length = simdutf::utf32_length_from_utf8(text.data(), text.size());
-    std::u32string result(length, 0);
-    (void) simdutf::convert_utf8_to_utf32(text.data(), text.size(), result.data());
-    return result;
-}
-
-std::string utf32_to_utf8(std::u32string_view text) {
-    size_t length = simdutf::utf8_length_from_utf32(text.data(), text.size());
-    std::string result(length, 0);
-    (void) simdutf::convert_utf32_to_utf8(text.data(), text.size(), result.data());
-    return result;
-}
 
 constexpr bool isRegionalIndicator(char32_t c) {
     return c >= 0x1F1E6 && c <= 0x1F1FF;
@@ -410,9 +397,14 @@ void Label::setString(std::string_view text) {
         return;
     }
 
+    auto utf8TextRes = geode::utils::string::utf8ToUtf32(text);
+    if (utf8TextRes.isErr()) {
+        return;
+    }
+
+    m_unicodeText = std::move(utf8TextRes.unwrap());
     m_text = text;
-    m_unicodeText = std::move(utf8_to_utf32(text));
-    //      m_useChunks = false; // reset chunks
+    // m_useChunks = false; // reset chunks
 
     updateChars();
 }

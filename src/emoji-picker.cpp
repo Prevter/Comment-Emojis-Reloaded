@@ -314,8 +314,13 @@ cocos2d::CCNode* EmojiPicker::createEmojiSprite(std::string_view emoji) {
         return nullptr;
     }
 
-    auto utf32 = utf8_to_utf32(emojiView);
+    auto utf32Res = geode::utils::string::utf8ToUtf32(emojiView);
+    if (!utf32Res) {
+        geode::log::warn("Failed to convert emoji {} to UTF-32", emoji);
+        return nullptr;
+    }
 
+    auto utf32 = std::move(utf32Res).unwrap();
     auto utf32_raw = std::u32string_view(utf32.data(), utf32.size());
     if (auto it = EmojiSheet.find(utf32_raw); it != EmojiSheet.end()) {
         return cocos2d::CCSprite::createWithSpriteFrameName(it->second);

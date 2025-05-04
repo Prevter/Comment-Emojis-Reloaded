@@ -2,17 +2,20 @@
 #include <Geode/modify/GameManager.hpp>
 #include <Geode/modify/ShareCommentLayer.hpp>
 
-#include <Geode/binding/GJComment.hpp>
 #include <Geode/Enums.hpp>
+#include <Geode/binding/GJComment.hpp>
 
 #include "emoji-picker.hpp"
 #include "emojis.hpp"
 
 std::string replaceEmojis(std::string_view text) {
     auto result = std::string(text);
-    for (auto& [name, emoji] : EmojiReplacements) {
+
+    // replace emoji placeholders
+    for (auto [name, emoji] : EmojiReplacements) {
         findAndReplace(result, name, emoji);
     }
+
     return result;
 }
 

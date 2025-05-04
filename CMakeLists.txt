@@ -4,7 +4,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "iOS" OR IOS)
     set(CMAKE_OSX_ARCHITECTURES "arm64")
-    set(SIMDUTF_TOOLS OFF)
     set(GEODE_DISABLE_PRECOMPILED_HEADERS ON)
 else()
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
@@ -41,7 +40,5 @@ endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
-CPMAddPackage("gh:simdutf/simdutf@6.0.3")
-target_link_libraries(${PROJECT_NAME} simdutf)
 
 setup_geode_mod(${PROJECT_NAME})

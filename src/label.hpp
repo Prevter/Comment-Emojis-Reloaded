@@ -73,8 +73,6 @@ protected:
     std::string m_atlasName;
 };
 
-std::u32string utf8_to_utf32(std::string_view text);
-std::string utf32_to_utf8(std::u32string_view text);
 
 enum class BMFontAlignment {
     Left,
