@@ -233,7 +233,17 @@ inline static Label::CustomNodeMap CustomNodeSheet = []() {
     res.emplace(
         MentionCharStrView,
         [](std::u32string_view input, uint32_t& index) -> cocos2d::CCNode* {
+            if (input.size() < 2) {
+                geode::log::warn("Unexpected end of mention emoji input");
+                return nullptr;
+            }
+
             int len = input[1];
+            if (input.size() < len + 2) {
+                geode::log::warn("Mention emoji name too long: {} > {}", len, input.size() - 2);
+                return nullptr;
+            }
+
             auto name = input.substr(2, len);
             index += len + 1;
 

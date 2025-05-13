@@ -1,3 +1,6 @@
+# 1.2.1
+- Fix few crashes with mentions
+
 # 1.2.0
 - Bump Geode version to 4.4.0
 - Fix android32 issues

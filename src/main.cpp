@@ -23,35 +23,30 @@ std::string replaceEmojis(std::string_view text) {
     // parse @mentions
     auto it = result.begin();
     while (it != result.end()) {
-        if (*it == '@') {
-            auto start = it;
+        if (*it != '@') {
             ++it;
-            while (it != result.end() && isValidUsernameChar(*it)) {
-                ++it;
-            }
-
-            char nameLength = std::min<ptrdiff_t>(std::distance(start, it), 255);
-            if (nameLength == 0) {
-                ++it;
-                continue;
-            }
-
-            auto name = std::string(start, it);
-            auto replacement = fmt::format("{}{}{}", MentionCharStr, nameLength, name);
-
-            auto startIndex = std::distance(result.begin(), start);
-            if (startIndex + replacement.size() > result.size()) {
-                // not enough space, extend the string
-                result.resize(startIndex + replacement.size());
-            }
-
-            result.replace(startIndex, nameLength, replacement);
-
-            // restore the iterator
-            it = result.begin() + startIndex + replacement.size();
-        } else {
-            ++it;
+            continue;
         }
+
+        auto start = it++;
+        while (it != result.end() && isValidUsernameChar(*it)) { ++it; }
+
+        char nameLength = std::min<ptrdiff_t>(std::distance(start, it), 255);
+        if (nameLength <= 1) { ++it; continue; }
+
+        auto name = std::string_view(start, it);
+        auto replacement = fmt::format("{}{}{}", MentionCharStr, nameLength, name);
+
+        auto startIndex = std::distance(result.begin(), start);
+        if (startIndex + replacement.size() > result.size()) {
+            // not enough space, extend the string
+            result.resize(startIndex + replacement.size());
+        }
+
+        result.replace(startIndex, nameLength, replacement);
+
+        // restore the iterator
+        it = result.begin() + startIndex + replacement.size();
     }
 
     return result;
