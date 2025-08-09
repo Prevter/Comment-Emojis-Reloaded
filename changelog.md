@@ -1,3 +1,8 @@
+# 1.2.2
+- Bump Geode version to 4.7.0
+- Added iOS support
+- Fix remaining issues with mentions
+
 # 1.2.1
 - Fix few crashes with mentions
 
